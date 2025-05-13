@@ -48,7 +48,7 @@ class DetailsFactureController extends AbstractController
         $this->em->flush();
 
         $ligneDeFactures = $this->ligneDeFactureRepository->findBy([
-            'facture' => $facture->getId()
+            'facture' => $facture
         ]);
 
         return $this->render('facture/detailsFacture.html.twig', [

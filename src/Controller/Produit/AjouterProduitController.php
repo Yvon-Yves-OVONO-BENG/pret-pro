@@ -86,7 +86,8 @@ class AjouterProduitController extends AbstractController
             #je met le nom du produit en CAPITAL LETTER
             $produit->setLibelle($this->strService->strToUpper($produit->getLibelle()))
                 ->setSupprime(0)
-                ->setKit(0)
+                ->setEnsemble(0)
+                ->setRetire(0)
                 ->setEnregistrePar($this->getUser())
                 ->setEnregistreAt(new DateTime('now'))
                 ->setPrixVente($produit->getLot()->getPrixVente())

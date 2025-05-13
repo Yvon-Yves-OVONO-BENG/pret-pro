@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'ensemble
+{% endblock %}
+
+{% block stylesheets %}
+	<style>
+		th,
+		tfoot {
+			font-size: 15px !important;
+			text-align: center !important;
+			font-weight: bold !important;
+			background-color: #F1F1F1 !important;
+		}
+
+		.infoTable {
+			text-align: center !important;
+			vertical-align: middle !important;
+		}
+
+		tr:hover {
+			background-color: rgba(62, 128, 235, 0.2) !important;
+			color: #3e80eb !important;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<!-- App-Content -->
+	<div class="hor-content main-content">
+		<div
+			class="container">
+
+			<!--Page header-->
+			<div class="page-header">
+				<div class="page-leftheader">
+					<h4 class="page-title mb-0 text-primary">
+						<i class="fa fa-cart-arrow-down me-2"></i>
+						Détails de l'ensemble</h4>
+				</div>
+				<div class="page-rightheader">
+					<a href="{{ path('liste_ensemble') }}" class="btn btn-outline-primary">
+						<i class="fa fa-cart-arrow-down me-2"></i>
+						{% trans %}Nos ensembles{% endtrans %}</a>
+
+						<a href="{{ path('imprimer_ensemble', {'slug': ensemble.slug }) }}" class="btn btn-outline-primary" target="_blank">
+							<i class="si si-printer me-2"></i>
+							{% trans %}Imprimer{% endtrans %}
+						</a>
+						
+						
+				</div>
+			</div>
+			<!--End Page header-->
+
+			<!-- Row -->
+			<!-- Row-->
+				<div class="row"> <div class="col-md-12">
+					<div class="card overflow-hidden border-primary">
+						<div class="card-body">
+							<h2 class="font-weight-bold text-primary">DETAILS DE L'ENSEMBLE :
+								{{ ensemble.libelle }}
+							</h2>
+							
+								
+							<div class="dropdown-divider"></div>
+							<div class="row pt-4">
+								<div class="col-lg-6 ">
+									<p class="h5 font-weight-bold">{% trans %}Contenu du ensemble{% endtrans %} :
+									</p>
+									
+								</div>
+								<div class="col-lg-6 text-end">
+									
+								</div>
+							</div>
+							<div class="table-responsive push">
+								<table class="table table-bordered table-hover text-nowrap">
+									<tr class=" ">
+										<th class="text-center " style="width: 1%">N°</th>
+										<th>{% trans %}Produits{% endtrans %}</th>
+										<th class="text-center" style="width: 1%">{% trans %}Quantité{% endtrans %}</th>
+										<th class="text-center" style="width: 1%">{% trans %}Prix{% endtrans %}</th>
+										<th class="text-center" style="width: 1%">{% trans %}Total{% endtrans %}</th>
+									</tr>
+									{% set i = 1 %}
+									
+									{% for ligneDeEnsemble in ensemble.produitLigneDeEnsembles %}
+									
+										<tr>
+											<td class="text-center">{{ i }}</td>
+											<td>
+												<p class="font-weight-semibold mb-1">{{ ligneDeEnsemble.produit.libelle }}</p>
+											</td>
+											<td class="text-end">{{ ligneDeEnsemble.quantite }}</td>
+											<td class="text-end">{{ ligneDeEnsemble.prix }}</td>
+											<td class="text-end">{{ ligneDeEnsemble.prix * ligneDeEnsemble.quantite }}</td>
+										</tr>
+
+										{% set i = i + 1 %}
+									{% endfor %}
+									<tr class="text-danger">
+										<td colspan="4" class="font-weight-bold text-uppercase text-end h4 mb-0">Total Due</td>
+										<td class="font-weight-bold text-end h4 mb-0">{{ ensemble.prixVente }} FCFA</td>
+									</tr>
+									
+									<tr>
+										<td colspan="5" class="text-end">
+											<a href="{{ path('modifier_ensemble', {'slug': ensemble.slug }) }}" class="btn btn-outline-primary">
+												<i class="fe fe-edit me-2"></i>
+												{% trans %}Modifier{% endtrans %}
+											</a>
+											
+
+											<a href="{{ path('liste_ensemble') }}" class="btn btn-outline-primary">
+												<i class="fa fa-cart-arrow-down me-2"></i>
+												{% trans %}Nos ensembles{% endtrans %}
+											</a>
+
+											<a href="{{ path('imprimer_ensemble', {'slug': ensemble.slug }) }}" class="btn btn-outline-primary" target="_blank">
+												<i class="si si-printer me-2"></i>
+												{% trans %}Imprimer{% endtrans %}
+											</a>
+											
+										</td>
+									</tr>
+								</table>
+							</div>
+							<p class="text-muted text-center">Merci beacoup d'avoit fait confiance à Prêt-Pro !</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End row-->
+		</div>
+	</div>
+</div></div>{% endblock %}

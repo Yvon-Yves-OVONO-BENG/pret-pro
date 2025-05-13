@@ -2,19 +2,26 @@
 
 namespace App\Controller\Panier;
 
+use DateTime;
 use App\Entity\ConstantsClass;
 use App\Entity\LigneDeFacture;
 use App\Service\PanierService;
-use App\Form\ConfirmerPanierType;
+use App\Service\QrcodeService;
+use App\Service\ImpressionFactureService;
+use App\Form\PanierAfficherType;
 use App\Entity\HistoriquePaiement;
+use Symfony\Component\Mime\Address;
 use App\Repository\FactureRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\EtatFactureRepository;
+use App\Repository\LigneDeFactureRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -31,12 +38,15 @@ class PanierAfficherController extends AbstractController
         protected EtatFactureRepository $etatFactureRepository, 
         protected ProduitRepository $produitRepository,
         protected FactureRepository $factureRepository,
+        protected QrcodeService $qrcodeService,
+        protected ImpressionFactureService $impressionFactureService,
+        protected LigneDeFactureRepository $ligneDeFactureRepository
         
         )
     {}
 
     #[Route('/panier/{s<[0-1]{1}>}', name: 'panier_afficher')]
-    public function afficher(Request $request, PanierService $panierService, string $slug = null, int $s = 0)
+    public function afficher(Request $request, PanierService $panierService, string $slug = null, int $s = 0, MailerInterface $mailer = null, TransportInterface $transport = null)
     {
         # je récupère ma session
         $maSession = $request->getSession();
@@ -79,7 +89,7 @@ class PanierAfficherController extends AbstractController
                 'slug' => $slug
             ]); 
 
-            $form = $this->createForm(ConfirmerPanierType::class, $facture);
+            $form = $this->createForm(PanierAfficherType::class, $facture);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) 
@@ -89,34 +99,170 @@ class PanierAfficherController extends AbstractController
                  */
                 $facture = $form->getData();
                 
+                /**
+                 *@var User 
+                 */
+                $user = $this->getUser();
                 #je set l'état de facture en fonction du mode de paiement
                 switch ($facture->getModePaiement()->getModePaiement()) 
                 {
                     case ConstantsClass::CASH:
                         ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $cash = $this->etatFacture->findOneByEtatFacture([
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
                             'etatFacture' => ConstantsClass::SOLDE
                         ]);
-                        $facture->setEtatFacture($cash);
-                        break;
 
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $prisEnCharge = $this->etatFacture->findOneByEtatFacture([
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
                             'etatFacture' => ConstantsClass::NON_SOLDE
                         ]);
-                        $facture->setEtatFacture($prisEnCharge);
+                        
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal()."FCFA, Avance : ".$facture->getAvance()."FCFA, Reste : ".$this->panierService->getTotal() - $facture->getAvance()."FCFA, Mode paiment : CASH, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+                        
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
                         break;
 
-                    case ConstantsClass::CREDIT:
+
+                    case ConstantsClass::COMPOSE:
                         ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $credit = $this->etatFacture->findOneByEtatFacture([
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
                             'etatFacture' => ConstantsClass::SOLDE
                         ]);
-                        $facture->setEtatFacture($credit);
+
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : COMPOSE, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+                        
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+
+
+                    case ConstantsClass::MOBILE_MONEY:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal()."FCFA, Avance : ".$facture->getAvance()."FCFA, Reste : ".$this->panierService->getTotal() - $facture->getAvance()."FCFA, Mode paiment : MOMO, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+
+                    case ConstantsClass::ORANGE_MONEY:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal()."FCFA, Avance : ".$facture->getAvance()."FCFA, Reste : ".$this->panierService->getTotal() - $facture->getAvance()."FCFA, Mode paiment : OM, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
                         break;
                     
+                    case ConstantsClass::CHEQUE:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal()."FCFA, Avance : ".$facture->getAvance()."FCFA, Reste : ".$this->panierService->getTotal() - $facture->getAvance()."FCFA, Mode paiment : CHEQUE, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+
+                    case ConstantsClass::VIREMENT:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal()."FCFA, Avance : ".$facture->getAvance()."FCFA, Reste : ".$this->panierService->getTotal() - $facture->getAvance()."FCFA, Mode paiment : VIREMENT, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+                
                 }
+
 
                 // 4. Nous allons la lier avec l'utilisateur actuellement connecté (Security)
                 
@@ -148,14 +294,14 @@ class PanierAfficherController extends AbstractController
 
                 }
 
-                if ($facture->getPatient()) 
+                if ($facture->getClient()) 
                 {
-                    $facture->setPatient($facture->getPatient());
+                    $facture->setClient($facture->getClient());
                 } 
                 else 
                 {
-                    $facture->setNomPatient(ConstantsClass::NOM_PATIENT)
-                        ->setContactPatient(ConstantsClass::CONTACT_PATIENT)
+                    $facture->setNomClient(ConstantsClass::NOM_PATIENT)
+                        ->setContactClient(ConstantsClass::CONTACT_PATIENT)
                     ;
                 }
                 
@@ -170,11 +316,76 @@ class PanierAfficherController extends AbstractController
                 // 6. Nous allons enregistrer la facture (EntityManagerInterface)
                 $this->em->flush(); 
 
+
                 #j'affiche le message de confirmation d'ajout
                 $this->addFlash('info', $this->translator->trans('Facture enregistrée avec succès !'));
 
                 #j'affecte 1 à ma variable pour afficher le message
                 $maSession->set('ajout', 1);
+
+                /**
+                 *@var User
+                */
+                $user = $this->getUser();
+                
+                $session = $request->getSession();
+                    
+                $session->set('user',$user);
+                
+                $session->set('facture',$facture);
+
+                $detailsFacture = $this->ligneDeFactureRepository->findBy([
+                    'facture' => $facture
+                ]);
+
+                // Génération du PDF
+                $filePath = $this->getParameter('kernel.project_dir') . '/public/factures/facture-' . $facture->getReference() . ' de '.$facture->getNomClient() .'.pdf';
+
+                // $htmlContent = $this->renderView('factures/facture_pdf.html.twig', [
+                //     'facture' => $facture,
+                //     'user' => $user,
+                // ]);
+
+                try 
+                {
+                    // Générer et enregistrer le fichier PDF
+                    $envoie = 1;
+                    $this->impressionFactureService->impressionFacture($facture, $detailsFacture, $envoie, $filePath);
+                } 
+                catch (\Exception $e) 
+                {
+                    $this->addFlash('danger', $this->translator->trans("Erreur lors de la génération de la facture PDF !"));
+                    return $this->redirectToRoute("liste_facture");
+                }
+
+                //envoi du mail
+                $email = (new TemplatedEmail())
+                ->from(new Address('pretpro@freedomsoftwarepro.com', "Prêt-Pro Service"))
+                ->to($facture->getEmailClient())
+                ->subject("Votre facture Prêt-Pro")
+                ->htmlTemplate('emails/envoieFacture.html.twig')
+                ->context([
+                    'facture' => $facture,
+                    'user' => $user,
+                ])
+                ->attachFromPath($filePath, 'facture-' . $facture->getReference() . ' de '.$facture->getNomClient() .'.pdf', 'application/pdf');
+                    
+                    
+                try 
+                {
+                    //j'envoie le mail
+                    $transport->send($email);
+                    $mailer->send($email);
+                
+                    //je retourne à la liste des factures
+                    $this->addFlash('info',  $this->translator->trans("Facture envoyée avec succès !"));
+                    // return $this->redirectToRoute('liste_facture');
+                } 
+                catch (\Throwable) 
+                {
+                $this->addFlash('info',  $this->translator->trans("Erreur lors de l'envoi de la facture !"));
+                return $this->redirectToRoute('accueil');
+                }
 
                 return  $this->redirectToRoute('liste_facture', [ 'm' => 1 ]);
                 
@@ -188,7 +399,7 @@ class PanierAfficherController extends AbstractController
             
             // 1. Nous voulons lire les données du formulaire
             //FormFactoryInterface / Request
-            $form = $this->createForm(ConfirmerPanierType::class, null, ['netApayer' => $netApayer]);
+            $form = $this->createForm(PanierAfficherType::class, null, ['netApayer' => $netApayer]);
             
             $form->handleRequest($request);
 
@@ -211,10 +422,15 @@ class PanierAfficherController extends AbstractController
             {
                 // 3. Nous allons créer une facture
                 /**
-                 * @var Facture
+                 *@var Facture
                  */
                 $facture = $form->getData();
                 
+                /**
+                 *@var User
+                */
+                $user = $this->getUser();
+
                 #je set l'état de facture en fonction du mode de paiement
                 switch ($facture->getModePaiement()->getModePaiement()) 
                 {
@@ -228,7 +444,10 @@ class PanierAfficherController extends AbstractController
                             'etatFacture' => ConstantsClass::NON_SOLDE
                         ]);
                         
-                        if ($facture->getAvance() == $netApayer) 
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : CASH, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
                         {
                             $facture->setEtatFacture($solde);
                         }
@@ -237,30 +456,138 @@ class PanierAfficherController extends AbstractController
                             $facture->setEtatFacture($nonSolde);
                         }
                         
-                        $facture->setNetAPayer($this->panierService->getTotal());
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
                         break;
 
-                    case ConstantsClass::PRIS_EN_CHARGE:
+
+                    case ConstantsClass::COMPOSE:
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : COMPOSE, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+                        
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+
+
+                    case ConstantsClass::MOBILE_MONEY:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
                         ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
                         $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
                             'etatFacture' => ConstantsClass::NON_SOLDE
                         ]);
                         
-                        $facture->setEtatFacture($nonSolde)
-                        ->setNetAPayer($this->panierService->getTotal()*2)
-                        ;
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : MOMO, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
                         break;
 
-                    case ConstantsClass::CREDIT:
+                    case ConstantsClass::ORANGE_MONEY:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
                         ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
                         $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
                             'etatFacture' => ConstantsClass::NON_SOLDE
                         ]);
                         
-                        $facture->setEtatFacture($nonSolde)
-                        ->setNetAPayer($this->panierService->getTotal());
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : OM, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
                         break;
                     
+                    case ConstantsClass::CHEQUE:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : CHEQUE, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+
+                    case ConstantsClass::VIREMENT:
+                        $solde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::SOLDE
+                        ]);
+                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
+                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
+                            'etatFacture' => ConstantsClass::NON_SOLDE
+                        ]);
+                        
+                        $qrCode = $this->qrcodeService->generateQrCode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".number_format($this->panierService->getTotal(), 0, '', ' ')."FCFA, Avance : ".number_format($facture->getAvance(), 0, '', ' ')."FCFA, Reste : ".number_format(($this->panierService->getTotal() - $facture->getAvance()), 0, '', ' ')."FCFA, Mode paiment : VIREMENT, Par : ".$user->getNom());
+
+
+                        if ($facture->getAvance() == $this->panierService->getTotal()) 
+                        {
+                            $facture->setEtatFacture($solde);
+                        }
+                        else
+                        {
+                            $facture->setEtatFacture($nonSolde);
+                        }
+
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        ->setQrCode($qrCode);
+                        break;
+                
                 }
 
 
@@ -308,10 +635,10 @@ class PanierAfficherController extends AbstractController
                 /////je construis la référence
                 $reference = 'PP-'.$id.$jour.$mois.$annee;
 
-                if ($facture->getPatient()) 
-                {
-                    $facture->setPatient($facture->getPatient());
-                } 
+                // if ($facture->getClient()) 
+                // {
+                //     $facture->setClient($facture->getClient());
+                // } 
 
                 $facture->setCaissiere($user)
                         ->setDateFactureAt($now)
@@ -328,6 +655,7 @@ class PanierAfficherController extends AbstractController
                 
                 $historiquePaiement->setFacture($facture)
                 ->setDateAvanceAt($now)
+                ->setHeure($now)
                 ->setMontantAvance($facture->getAvance())
                 ->setRecuPar($this->getUser());
                 
@@ -343,49 +671,64 @@ class PanierAfficherController extends AbstractController
                     $ligneDeFacture->setFacture($facture)
                                     ->setProduit($panierProduit->produit)
                                     ->setQuantite($panierProduit->qte);
-                                    
+                                   
                     switch ($facture->getModePaiement()->getModePaiement()) 
                     {
                         case ConstantsClass::CASH:
                             $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
                             ->setPrixQuantite($panierProduit->getTotal());
                             break;
-    
-                        case ConstantsClass::PRIS_EN_CHARGE:
-                            $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente()*1.2)
-                            ->setPrixQuantite(($panierProduit->produit->getPrixVente()*1.2) * $panierProduit->qte);
-                            
+
+                        case ConstantsClass::COMPOSE:
+                            $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
+                            ->setPrixQuantite($panierProduit->getTotal());
                             break;
     
-                        case ConstantsClass::CREDIT:
+                        case ConstantsClass::ORANGE_MONEY:
+                            $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
+                            ->setPrixQuantite($panierProduit->getTotal());
+                            break;
+
+                        case ConstantsClass::MOBILE_MONEY:
+                            $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
+                            ->setPrixQuantite($panierProduit->getTotal());
+                            break;
+
+                        case ConstantsClass::CHEQUE:
+                            $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
+                            ->setPrixQuantite($panierProduit->getTotal());
+                            break;
+
+                        case ConstantsClass::VIREMENT:
                             $ligneDeFacture->setPrix($panierProduit->produit->getPrixVente())
                             ->setPrixQuantite($panierProduit->getTotal());
                             break;
                         
                     }
-                    if ($panierProduit->produit->isKit()) 
+                    
+                    if ($panierProduit->produit->isEnsemble()) 
                     {   
-                        foreach ($panierProduit->produit->getProduitLigneDeKits() as $ligneDeKit) 
+                        foreach ($panierProduit->produit->getProduitLigneDeEnsembles() as $ligneDeEnsemble) 
                         {   
                             #quantite de la facture
-                            $quantiteFacture = $ligneDeKit->getQuantite() * $panierProduit->qte;
-                            
+                            $quantiteFacture = $ligneDeEnsemble->getQuantite() * $panierProduit->qte;
+                                    
                             // dd($lot);
-                            if ($ligneDeKit->getProduit()->getLot()) 
+                            if ($ligneDeEnsemble->getProduit()->getLot()) 
                             {
                                 #nombreVendu dans un lot
-                                $ancienneQuantiteVenduLot = $ligneDeKit->getProduit()->getLot()->getVendu();
+                                $ancienneQuantiteVenduLot = $ligneDeEnsemble->getProduit()->getLot()->getVendu();
 
                                 #nouvelle quantité vendu
                                 $nouvelleQuaniteVenduLot = $ancienneQuantiteVenduLot + $quantiteFacture;
                                 
-                                $ligneDeKit->getProduit()->getLot()->setVendu($nouvelleQuaniteVenduLot);
-                                $this->em->persist($ligneDeKit->getProduit()->getLot());
+                                $ligneDeEnsemble->getProduit()->getLot()->setVendu($nouvelleQuaniteVenduLot);
+                                $this->em->persist($ligneDeEnsemble->getProduit()->getLot());
 
                             }
 
                             $this->em->persist($ligneDeFacture);
-                            $this->em->persist($ligneDeKit);
+                            $this->em->persist($ligneDeEnsemble);
                             
                         }
                     } 
@@ -420,7 +763,7 @@ class PanierAfficherController extends AbstractController
                     }
                     
                 }
-
+               
                 // 6. Nous allons enregistrer la facture (EntityManagerInterface)
                 $this->em->flush(); 
                 
@@ -438,6 +781,70 @@ class PanierAfficherController extends AbstractController
                 
                 #j'affecte 1 à ma variable pour afficher le message
                 $maSession->set('ajout', 1);
+
+                /**
+                 *@var User
+                */
+                $user = $this->getUser();
+                
+                $session = $request->getSession();
+                    
+                $session->set('user',$user);
+                
+                $session->set('facture',$facture);
+
+                $detailsFacture = $this->ligneDeFactureRepository->findBy([
+                    'facture' => $facture
+                ]);
+
+                // Génération du PDF
+                $filePath = $this->getParameter('kernel.project_dir') . '/public/factures/facture-' . $facture->getReference() . ' de '.$facture->getNomClient() .'.pdf';
+
+                // $htmlContent = $this->renderView('factures/facture_pdf.html.twig', [
+                //     'facture' => $facture,
+                //     'user' => $user,
+                // ]);
+
+                try 
+                {
+                    // Générer et enregistrer le fichier PDF
+                    $envoie = 1;
+                    $this->impressionFactureService->impressionFacture($facture, $detailsFacture, $envoie, $filePath);
+                } 
+                catch (\Exception $e) 
+                {
+                    $this->addFlash('danger', $this->translator->trans("Erreur lors de la génération de la facture PDF !"));
+                    return $this->redirectToRoute("liste_facture");
+                }
+
+                //envoi du mail
+                $email = (new TemplatedEmail())
+                ->from(new Address('pretpro@freedomsoftwarepro.com', "Prêt-Pro Service"))
+                ->to($facture->getEmailClient())
+                ->subject("Votre facture Prêt-Pro")
+                ->htmlTemplate('emails/envoieFacture.html.twig')
+                ->context([
+                    'facture' => $facture,
+                    'user' => $user,
+                ])
+                ->attachFromPath($filePath, 'facture-' . $facture->getReference() . ' de '.$facture->getNomClient() .'.pdf', 'application/pdf');
+                    
+                    
+                try 
+                {
+                    //j'envoie le mail
+                    $transport->send($email);
+                    $mailer->send($email);
+                
+                    //je retourne à la liste des factures
+                    $this->addFlash('info',  $this->translator->trans("Facture envoyée avec succès !"));
+                    // return $this->redirectToRoute('liste_facture');
+                } 
+                catch (\Throwable) 
+                {
+                    $this->addFlash('info',  $this->translator->trans("Erreur lors de l'envoi de la facture !"));
+                    return $this->redirectToRoute('accueil');
+                }
 
                 return  $this->redirectToRoute('details_facture', [ 'slug' => $slug.$id, 'm' => 1 ]);
                 

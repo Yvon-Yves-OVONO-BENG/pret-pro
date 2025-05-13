@@ -97,13 +97,13 @@
 											<td>
 												<a class="font-weight-normal1" href="">{{ societe.societe }}</a>
 											</td>
-											<td>{{ societe.patients|length }}</td>
+											<td>{{ societe.clients|length }}</td>
 											
 											<td>
 												<a href="{{ path ('modifier_societe', {'slug': societe.slug })}}" class="btn btn-outline-primary"><i class="fe fe-edit me-2"></i> {% trans %}Modifier{% endtrans %}</a>
 												
 										
-                                                {% if societe.patients|length == 0 %}
+                                                {% if societe.clients|length == 0 %}
 
 													<a class="btn btn-outline-danger" href="javascript:void(0);" 
 														onclick="swal({

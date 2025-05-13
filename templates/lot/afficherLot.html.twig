@@ -115,7 +115,6 @@
 										<th>{% trans %}Quantité{% endtrans %}</th>
 										<th>{% trans %}Vendu{% endtrans %}</th>
 										<th>{% trans %}Reste{% endtrans %}</th>
-										<th>{% trans %}Date Exp.{% endtrans %}</th>
 										{% if is_granted('ROLE_SECRETAIRE') or is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_DIRECTEUR') %}
 											<th>{% trans %}Opérations{% endtrans %}</th>
 										{% endif %}
@@ -128,7 +127,6 @@
 										<th>{% trans %}Quatité{% endtrans %}</th>
 										<th>{% trans %}Vendu{% endtrans %}</th>
 										<th>{% trans %}Reste{% endtrans %}</th>
-										<th>{% trans %}Date Exp.{% endtrans %}</th>
 										{% if is_granted('ROLE_SECRETAIRE') or is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_DIRECTEUR') %}
 											<th>{% trans %}Opérations{% endtrans %}</th>
 										{% endif %}
@@ -145,10 +143,7 @@
 											<td><span class="badge  bg-success rounded-pill">{{ lot.quantite }}</span></td>
 											<td><span class="badge  bg-info rounded-pill">{{ lot.vendu ? lot.vendu : 0 }}</span></td>
 											<td><span class="badge  bg-danger rounded-pill">{{ lot.quantite - lot.vendu }}</span></td>
-											
-											<td>
-												<a class="font-weight-normal1" href="">{{ lot.datePeremptionAt ? lot.datePeremptionAt|date('d-m-Y') : "" }}</a>
-											</td>
+							
 											
 											{% if is_granted('ROLE_SECRETAIRE') or is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_DIRECTEUR') %}
 												<td>

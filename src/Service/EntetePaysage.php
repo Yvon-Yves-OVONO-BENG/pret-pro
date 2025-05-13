@@ -85,9 +85,9 @@ class EntetePaysage
 		########################################
 
 		$pdf->SetX(20);
-		$pdf->Cell(70, 4, utf8_decode("Hôpital de District d'Abong Mbang"), 0, 0, 'C', 0);
+		$pdf->Cell(70, 4, utf8_decode("Prêt-Pro"), 0, 0, 'C', 0);
 		$pdf->Cell(120, 4, '', 0, 0, 'L', 0);
-		$pdf->Cell(70, 4, utf8_decode('Abong Mbang District Hospital'), 0, 1, 'C', 0);
+		$pdf->Cell(70, 4, utf8_decode('Prêt-Pro'), 0, 1, 'C', 0);
 
 		$pdf->SetX(20);
 		$pdf->SetFont('Helvetica', 'B', 8);
@@ -97,9 +97,9 @@ class EntetePaysage
 
 		################################
 		$pdf->SetX(20);
-		$pdf->Cell(70, 4, utf8_decode('BP : 19 - ABG MBG, Tel : +237 670 152 046'), 0, 0, 'C', 0);
+		$pdf->Cell(70, 4, utf8_decode('BP : 14525 - Yaoundé, Tel : +237 697 993 386'), 0, 0, 'C', 0);
 		$pdf->Cell(120, 4, '', 0, 0, 'L', 0);
-		$pdf->Cell(70, 4, utf8_decode('Po.Box : 19 - ABG MBG, Tel : +237 670 152 046'), 0, 1, 'C', 0);
+		$pdf->Cell(70, 4, utf8_decode('Po.Box : 14525 - Yaoundé, Tel : +237 697 993 386'), 0, 1, 'C', 0);
 
 		$pdf->SetX(20);
 		$pdf->SetFont('Helvetica', 'B', 8);

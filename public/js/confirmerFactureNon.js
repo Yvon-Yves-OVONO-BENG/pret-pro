@@ -2,15 +2,15 @@
 document.addEventListener('DOMContentLoaded', function() {
 	
 		
-		const patient = document.getElementById('confirmer_panier_patient');
-		const nomPatient = document.getElementById('confirmer_panier_nomPatient');
-		const contact = document.getElementById('confirmer_panier_contactPatient');
+		const client = document.getElementById('confirmer_panier_client');
+		const nomClient = document.getElementById('confirmer_panier_nomClient');
+		const contact = document.getElementById('confirmer_panier_contactClient');
 		const boutonPayer = document.getElementById('boutonEnvoie');
 		
 		//////fonction validation
 		function verificationDesChamps() {
-			if ((patient.value.trim() && contact.value && !nomPatient.value) ||
-				(nomPatient.value && contact.value && !patient.value)) {
+			if ((client.value.trim() && contact.value && !nomClient.value) ||
+				(nomClient.value && contact.value && !client.value)) {
 					boutonPayer.disabled = false;
 					console.log('ok');
 				}
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		/////j'appelle la finctio au niveau des champs
-		patient.addEventListener('input', verificationDesChamps());
-		nomPatient.addEventListener('input', verificationDesChamps());
+		client.addEventListener('input', verificationDesChamps());
+		nomClient.addEventListener('input', verificationDesChamps());
 		contact.addEventListener('input', verificationDesChamps());
 	
 });

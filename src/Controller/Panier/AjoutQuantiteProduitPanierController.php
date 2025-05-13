@@ -3,7 +3,7 @@
 namespace App\Controller\Panier;
 
 use App\Service\PanierService;
-use App\Repository\KitRepository;
+use App\Repository\EnsembleRepository;
 use App\Repository\ProduitRepository;
 use App\Service\AjoutQuantiteProduitService;
 use Symfony\Component\Routing\Annotation\Route;

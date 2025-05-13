@@ -69,7 +69,13 @@ class FactureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-
+    /**
+     * Undocumented function
+     *
+     * @param DateTime $dateDebut
+     * @param DateTime $dateFin
+     * @return array
+     */
     public function facturePeriodeDonnee(DateTime $dateDebut, DateTime $dateFin): array
     {
         $qb = $this->createQueryBuilder('f')
@@ -165,12 +171,9 @@ class FactureRepository extends ServiceEntityRepository
                 ->andWhere('f.etatFacture = e.id')
                 ->andWhere('f.dateFactureAt = :dateFacture')
                 ->andWhere('f.avance = 0')
-                ->andWhere('m.modePaiement = :credit OR m.modePaiement = :prisEncharge')
                 ->andWhere('e.etatFacture = :nonSolde')
                 ->setParameter('dateFacture', $dateFacture)
                 ->setParameter('nonSolde', ConstantsClass::NON_SOLDE)
-                ->setParameter('credit', ConstantsClass::CREDIT)
-                ->setParameter('prisEncharge', ConstantsClass::PRIS_EN_CHARGE)
                 ->groupBy('PAIEMENT', 'CAISSIERE')
                 ;
 
@@ -297,25 +300,34 @@ class FactureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function clients()
+    {
+        return $this->createQueryBuilder('f')
+        ->select('f.nomClient, f.contactClient, f.emailClient, f.adresseClient')
+        ->groupBy('f.nomClient, f.contactClient, f.emailClient, f.adresseClient')
+        ->getQuery()
+        ->getResult();
+    }
+
     /**
-     * fonction qui retourne les kits vendus du jour par caissiere
+     * fonction qui retourne les ensembles vendus du jour par caissiere
      *
      * @return void
      */
-    public function kitsVenduParCaissiereDuJour()
+    public function ensemblesVenduParCaissiereDuJour()
     {
         $qb = $this->createQueryBuilder('f')
-            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomKit, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant, f.avance AS avance, f.netAPayer AS netAPayer')
+            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomEnsemble, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant, f.avance AS avance, f.netAPayer AS netAPayer')
             ->innerJoin('f.ligneDeFactures','ldf')
             ->innerJoin('ldf.produit', 'p')
             ->innerJoin('f.caissiere', 'u')
             ->innerJoin('f.modePaiement', 'mp')
-            ->andWhere('p.kit = :isKit')
+            ->andWhere('p.ensemble = :isEnsemble')
             ->andWhere('f.dateFactureAt = :aujourdhui')
             ->andWhere('mp.modePaiement IN (:modesPaiement)')
-            ->setParameter('isKit', true)
+            ->setParameter('isEnsemble', true)
             ->setParameter('aujourdhui', new DateTime('today'))
-            ->setParameter('modesPaiement', [ConstantsClass::CASH, ConstantsClass::CREDIT, ConstantsClass::PRIS_EN_CHARGE])
+            ->setParameter('modesPaiement', [ConstantsClass::CASH])
             ->groupBy('caissiere', 'modePaiement');
 
             return $qb->getQuery()->getResult();
@@ -323,25 +335,25 @@ class FactureRepository extends ServiceEntityRepository
 
 
     /**
-     * fonction qui retourne les kits vendus d'un jour particulier
+     * fonction qui retourne les ensembles vendus d'un jour particulier
      *
      * @param DateTime $dateDuJour
      * @return void
      */
-    public function kitsVenduParCaissiereDunJourParticulier(DateTime $dateDuJour)
+    public function ensemblesVenduParCaissiereDunJourParticulier(DateTime $dateDuJour)
     {
         $qb = $this->createQueryBuilder('f')
-            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomKit, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant')
+            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomEnsemble, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant')
             ->innerJoin('f.ligneDeFactures','ldf')
             ->innerJoin('ldf.produit', 'p')
             ->innerJoin('f.caissiere', 'u')
             ->innerJoin('f.modePaiement', 'mp')
-            ->where('p.kit = :isKit')
+            ->where('p.ensemble = :isEnsemble')
             ->andWhere('f.dateFactureAt = :dateDuJour')
             ->andWhere('mp.modePaiement IN (:modesPaiement)')
-            ->setParameter('isKit', true)
+            ->setParameter('isEnsemble', true)
             ->setParameter('dateDuJour', $dateDuJour)
-            ->setParameter('modesPaiement', [ConstantsClass::CASH, ConstantsClass::CREDIT, ConstantsClass::PRIS_EN_CHARGE])
+            ->setParameter('modesPaiement', [ConstantsClass::CASH])
             ->groupBy('caissiere', 'modePaiement');
 
             return $qb->getQuery()->getResult();
@@ -349,28 +361,28 @@ class FactureRepository extends ServiceEntityRepository
 
 
     /**
-     * fonction qui retourne les kits vendus des caisi_re d'une période données
+     * fonction qui retourne les ensembles vendus des caisi_re d'une période données
      *
      * @param DateTime $dateDebut
      * @param DateTime $dateFin
      * @return void
      */
-    public function kitsVenduParCaissiereDunePeriode(DateTime $dateDebut, DateTime $dateFin)
+    public function ensemblesVenduParCaissiereDunePeriode(DateTime $dateDebut, DateTime $dateFin)
     {
         $qb = $this->createQueryBuilder('f')
-            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomKit, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant')
+            ->select('u.nom AS caissiere, mp.modePaiement AS modePaiement, p.libelle AS nomEnsemble, COUNT(ldf.id) AS nombre, SUM(ldf.prixQuantite) AS montant')
             ->innerJoin('f.ligneDeFactures','ldf')
             ->innerJoin('ldf.produit', 'p')
             ->innerJoin('f.caissiere', 'u')
             ->innerJoin('f.modePaiement', 'mp')
-            ->where('p.kit = :isKit')
+            ->where('p.ensemble = :isEnsemble')
             ->andWhere('f.dateFactureAt BETWEEN :dateDebut AND :dateFin')
             ->andWhere('mp.modePaiement IN (:modesPaiement)')
-            ->setParameter('isKit', true)
+            ->setParameter('isEnsemble', true)
             ->setParameter('dateDebut', $dateDebut)
             ->setParameter('dateFin', $dateFin)
-            ->setParameter('modesPaiement', [ConstantsClass::CASH, ConstantsClass::CREDIT, ConstantsClass::PRIS_EN_CHARGE])
-            ->groupBy('caissiere', 'modePaiement', 'nomKit');
+            ->setParameter('modesPaiement', [ConstantsClass::CASH])
+            ->groupBy('caissiere', 'modePaiement', 'nomEnsemble');
 
             return $qb->getQuery()->getResult();
     }
@@ -404,7 +416,7 @@ class FactureRepository extends ServiceEntityRepository
                 ->andWhere('etf.id = f.etatFacture')
                 ->andWhere('u.id = f.caissiere')
                 ->andWhere('p.supprime = 0')
-                ->andWhere('p.kit = 0')
+                ->andWhere('p.ensemble = 0')
                 ->andWhere('f.annulee = 0')
                 ->andWhere('f.dateFactureAt = :dateFacture')
                 ->setParameter('dateFacture', date_format($aujourdhui, 'Y-m-d'))

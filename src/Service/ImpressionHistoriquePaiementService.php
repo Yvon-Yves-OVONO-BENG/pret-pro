@@ -52,32 +52,32 @@ class ImpressionHistoriquePaiementService extends FPDF
         $pdf->SetX(15);
         $pdf->SetFont('Arial', '', 10);
 
-        if ($facture->getPatient()) 
+        if ($facture->getClient()) 
         {
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Nom du client :".$facture->getPatient()->getNom()), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Nom du client :".$facture->getClient()->getNom()), 0, 1, 'L', 0);
             
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Date de naissance : ".date_format($facture->getPatient()->getDateNaissanceAt(), 'd-m-Y')), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Date de naissance : ".date_format($facture->getClient()->getDateNaissanceAt(), 'd-m-Y')), 0, 1, 'L', 0);
 
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Ville : ".$facture->getPatient()->getVilleResidence()), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Ville : ".$facture->getClient()->getVilleResidence()), 0, 1, 'L', 0);
 
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Pays : ".$facture->getPatient()->getPays()->getPays()), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Pays : ".$facture->getClient()->getPays()->getPays()), 0, 1, 'L', 0);
 
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Téléphone : ".$facture->getPatient()->getTelephone()), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Téléphone : ".$facture->getClient()->getTelephone()), 0, 1, 'L', 0);
         } 
         else 
         {
             $pdf->SetX(15);
-            $pdf->Cell(0, 5, utf8_decode("Nom du client :  ".$facture->getNomPatient()), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Nom du client :  ".$facture->getNomClient()), 0, 1, 'L', 0);
 
             $pdf->SetX(15);
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(20, 5, utf8_decode("Téléphone : "), 0, 0, 'L', 0);
-            $pdf->Cell(100, 5, utf8_decode($facture->getContactPatient() ? $facture->getContactPatient() : ""), 0, 1, 'L', 0);
+            $pdf->Cell(100, 5, utf8_decode($facture->getContactClient() ? $facture->getContactClient() : ""), 0, 1, 'L', 0);
 
         }
         

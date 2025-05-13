@@ -19,7 +19,7 @@ class ImpressionDesFactureService extends FPDF
     }
 
     /**
-     * function qui imprime les factures non soldées d'un patient
+     * function qui imprime les factures non soldées d'un client
      *
      * @param array $factures
      * @return PaginationPortrait
@@ -60,20 +60,11 @@ class ImpressionDesFactureService extends FPDF
             $pdf->SetX(15);
             $pdf->SetFont('Arial', '', 10);
 
-            if ($factur->getPatient()) 
-            {
-                $pdf->Cell(0, 5, utf8_decode("Salut ".$factur->getPatient()->getNom()), 0, 1, 'L', 0);
-                $pdf->Cell(0, 5, utf8_decode("Date de naissance : ".date_format($factur->getPatient()->getDateNaissanceAt(), 'd-m-Y')), 0, 1, 'L', 0);
-            } 
-            else 
-            {
-                $pdf->Cell(0, 5, utf8_decode("Salut ".$factur->getNomPatient()), 0, 1, 'L', 0);
-            }
-            
+            $pdf->Cell(0, 5, utf8_decode("Salut ".$factur->getNomClient()), 0, 1, 'L', 1);
             
             $pdf->SetX(15);
             $pdf->SetFont('Arial', '', 10);
-            $pdf->Cell(0, 5, utf8_decode("Téléphone : ".$factur->getContactPatient() ? $factur->getContactPatient() : "".","), 0, 1, 'L', 0);
+            $pdf->Cell(0, 5, utf8_decode("Téléphone : ".$factur->getContactClient() ? $factur->getContactClient() : "".","), 0, 1, 'L', 0);
 
             $pdf->SetFont('Arial', '', 10);
             $pdf->SetX(15);

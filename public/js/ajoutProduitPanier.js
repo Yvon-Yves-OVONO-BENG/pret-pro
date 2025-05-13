@@ -13,7 +13,7 @@
 
 			///je cree un nouvel objet XMLHttpRequest
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/pharmacie/public/ajout-produit-panier', true);
+			xhr.open('POST', '/pretpro/public/ajout-produit-panier', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function() 
 			{
@@ -56,13 +56,13 @@
 	////fonction qui met à jour le nomre de produit dans mon panier
 	function updateCartCount(){
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '/pharmacie/public/compter-produits-panier', true);
+		xhr.open('GET', '/pretpro/public/compter-produits-panier', true);
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState === 4 && xhr.status === 200) {
 				var response = JSON.parse(xhr.responseText);
 				if (response.success) {
 					var nombreProduitDansLePanier = document.getElementById('nombreProduitPanier');
-					var totalApayerDansLePanier = document.getElementById('totalApayerPatient');
+					var totalApayerDansLePanier = document.getElementById('totalApayerClient');
 
 					nombreProduitDansLePanier.textContent = response.nombreProduit;
 					totalApayerDansLePanier.textContent = 'Total : ' + diviseNombreEnBlocDeTrois(response.totalApayer) + ' FCFA';

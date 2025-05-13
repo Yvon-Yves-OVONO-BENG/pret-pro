@@ -37,7 +37,7 @@ class ImpressionFicheEntreeService extends FPDF
         
         $pdf->Ln(8);
         $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(0, 5, "FICHE D'ENTREE DES MEDICAMENTS", 0, 1, 'C', 0);
+        $pdf->Cell(0, 5, "FICHE D'ENTREE DES PRODUITS", 0, 1, 'C', 0);
         $pdf->SetFont('Arial', 'BI', 7);
         $pdf->Cell(0, 5, 'Les prix sont en fcfa', 0, 1, 'C', 0);
 

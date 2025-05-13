@@ -2,7 +2,6 @@
 
 namespace App\Controller\Produit;
 
-use DateTime;
 use App\Repository\FactureRepository;
 use App\Repository\LigneDeFactureRepository;
 use App\Repository\ProduitRepository;
@@ -45,7 +44,7 @@ class ImpressionEtatStockController extends AbstractController
                 $produits = [];
                 foreach ($ligneDeFactures as $ligneDeFacture) 
                 {
-                    if ($ligneDeFacture->getProduit()->isKit() == 0) 
+                    if ($ligneDeFacture->getProduit()->isEnsemble() == 0) 
                     {
                         $produits[] = $ligneDeFacture->getProduit();
                     }
@@ -60,7 +59,7 @@ class ImpressionEtatStockController extends AbstractController
             $periode = 0;
             #je récupères les produits de la base de données
             $produits = $this->produitRepository->findBy([
-                'kit' => 0,
+                'ensemble' => 0,
                 'supprime' => 0,
             ], ['libelle' => 'ASC']);
             

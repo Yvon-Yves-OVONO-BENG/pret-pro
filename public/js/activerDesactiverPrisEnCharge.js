@@ -1,12 +1,12 @@
 ///////PRIS EN CHARGE SOLDE
 document.addEventListener('DOMContentLoaded', function() {
     $('.custom-switch-input').change(function() {
-        let patientId = $(this).data('id');
+        let clientId = $(this).data('id');
         let isChecked = $(this).is(':checked');
         
         ///je cree un nouvel objet XMLHttpRequest
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/pharmacie/public/patient/terminer-patient', true);
+			xhr.open('POST', '/pretpro/public/client/terminer-client', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function() 
 			{
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					if (response.success) 
 					{
 						notif({
-							msg: "<b>Pris en charge du patient modifiée avec succès !</b>",
+							msg: "<b>Pris en charge du client modifiée avec succès !</b>",
 							type: "success",
 							position: "left",
 							width: 500,
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					else 
 					{
 						notif({
-							msg: "<b>Erreur lors de la mise à jour du patient !</b>",
+							msg: "<b>Erreur lors de la mise à jour du client !</b>",
 							type: "danger",
 							position: "left",
 							width: 500,
@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			};
 			
-			//j'envoie la request avec le patient ID
-			xhr.send('patient_id=' + patientId);
+			//j'envoie la request avec le client ID
+			xhr.send('client_id=' + clientId);
         
     });
 });
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}).then((result) => {
 				if (result.isConfirmed) {
 					// Redirection vers une autre page ou rafraîchissement de la page actuelle
-					window.location.href = '/pharmacie/public/patient/afficher-patient/1'; // Exemple de redirection
+					window.location.href = '/pretpro/public/client/afficher-client/1'; // Exemple de redirection
 				}
 			});
 

@@ -42,7 +42,7 @@ class CaissesSepareesDunJourParticulierController extends AbstractController
         $dateDuJour = "";
         $facturesDuJour = "";
         $recettesDuJour = "";
-        $recettesKitDuJour ="";
+        $recettesEnsembleDuJour ="";
 
         $afficher = false;
 
@@ -52,7 +52,7 @@ class CaissesSepareesDunJourParticulierController extends AbstractController
             
             $recettesDuJour = $this->ligneDeFactureRepository->recetteDunJourParticulier($dateDuJour);
 
-            $recettesKitDuJour = $this->factureRepository->kitsVenduParCaissiereDunJourParticulier($dateDuJour);
+            $recettesEnsembleDuJour = $this->factureRepository->ensemblesVenduParCaissiereDunJourParticulier($dateDuJour);
 
             #je récupère les factures du jour
             $facturesDuJour = $this->factureRepository->findBy([
@@ -69,7 +69,7 @@ class CaissesSepareesDunJourParticulierController extends AbstractController
             'afficher' => $afficher,
             'facturesDuJour' => $facturesDuJour,
             'recettesDuJour' => $recettesDuJour,
-            'recettesKitDuJour' => $recettesKitDuJour,
+            'recettesEnsembleDuJour' => $recettesEnsembleDuJour,
         ]);
     }
 }

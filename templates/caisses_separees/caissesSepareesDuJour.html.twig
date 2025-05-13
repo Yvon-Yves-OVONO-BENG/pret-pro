@@ -33,7 +33,7 @@
 <!-- App-Content -->
 <div class="hor-content main-content">
     <div class="container">
-        <!--Page header MEDICAMENTS-->
+        <!--Page header PRODUITS-->
         <div class="page-header">
             <div class="page-leftheader">
                 <h4 class="page-title mb-0 text-primary"><i class="fa fa-money me-2"></i>{% trans %}Caisses séparées du jour{% endtrans %} : {{ aujourdhui|date('d-m-Y') }}</h4>
@@ -163,7 +163,7 @@
                                             </td>
 
                                             <td class="infoTable" style="vertical-align: middle !important;">
-                                                <h5><span class="badge badge-default">{{ recetteDuJour.montant }} FCFA</span></h5>
+                                                <h5><span class="badge badge-default">{{ recetteDuJour.montant|number_format }} FCFA</span></h5>
                                             </td>
                                             
                                         </tr>
@@ -181,7 +181,7 @@
         <!--Page header RECETTE DES KITS DU JOUR-->
         <div class="page-header">
             <div class="page-leftheader">
-                <h4 class="page-title mb-0 text-primary"><i class="fa fa-money me-2"></i>{% trans %}Recettes des kits du jour{% endtrans %} : {{ aujourdhui|date('d-m-Y') }}</h4>
+                <h4 class="page-title mb-0 text-primary"><i class="fa fa-money me-2"></i>{% trans %}Recettes des ensembles du jour{% endtrans %} : {{ aujourdhui|date('d-m-Y') }}</h4>
             </div>
             <div class="page-rightheader">
                 <div class="btn-list">
@@ -199,12 +199,12 @@
         <div class="card border-danger">
             <div class="card-header">
                 <div class="col-md-4">
-                    <h3 class="card-title">{% trans %}Recettes des kits d'aujourd'hui{% endtrans %}</h3>
+                    <h3 class="card-title">{% trans %}Recettes des ensembles d'aujourd'hui{% endtrans %}</h3>
                 </div>
                 <div class="col-md-4"></div>
                 <div class="col-md-4 text-right">
                     <button type="button" class="btn btn-primary mt-1 mb-1 me-3">
-                        <span class="badge bg-white text-dark">{{ recettesKitDuJour | length }}</span>
+                        <span class="badge bg-white text-dark">{{ recettesEnsembleDuJour | length }}</span>
                         <span>{% trans %}enregistrée(s){% endtrans %}</span>
                     </button>
                         
@@ -222,7 +222,7 @@
                                     <i class="fa fa-user"></i> {% trans %}Caissière{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
-                                    <i class="fa fa-houzz"></i> {% trans %}Kit{% endtrans %}
+                                    <i class="fa fa-houzz"></i> {% trans %}Ensemble{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
                                     <i class="fa fa-credit-card"></i> Mode paiement
@@ -245,7 +245,7 @@
                                     <i class="fa fa-user"></i> {% trans %}Caissière{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
-                                    <i class="fa fa-houzz"></i> {% trans %}Kit{% endtrans %}
+                                    <i class="fa fa-houzz"></i> {% trans %}Ensemble{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
                                     <i class="fa fa-credit-card"></i> Mode paiement
@@ -261,7 +261,7 @@
                         </tfoot>
                         <tbody>
                             {% set i = 1 %}
-                            {% for recetteKitDuJour in recettesKitDuJour %}
+                            {% for recetteEnsembleDuJour in recettesEnsembleDuJour %}
                                 <tr>
                                     <td class="infoTable">
                                         <span class="badge badge-default">{{ i }}</span>
@@ -269,30 +269,30 @@
                                     <td class="infoTable">
 
                                         <button type="button" class="btn btn-primary btn-sm btn-block position-relative me-5 mb-2">
-                                            {{ recetteKitDuJour.caissiere }}
+                                            {{ recetteEnsembleDuJour.caissiere }}
                                         </button>
                                         
                                     </td>
                                     <td class="infoTable">
-                                        {{ recetteKitDuJour.nomKit }}
+                                        {{ recetteEnsembleDuJour.nomEnsemble }}
                                     </td>
 
                                     <td class="infoTable">
-                                        {% if recetteKitDuJour.modePaiement == 'CASH' %}
-                                            <span class="bg-success px-2 py-1 text-white br-7">{{ recetteKitDuJour.modePaiement }} </span>
+                                        {% if recetteEnsembleDuJour.modePaiement == 'CASH' %}
+                                            <span class="bg-success px-2 py-1 text-white br-7">{{ recetteEnsembleDuJour.modePaiement }} </span>
                                             {% else %}
-                                            {% if recetteKitDuJour.modePaiement == 'PRIS EN CHARGE' %}
-                                                <span class="bg-info px-2 py-1 text-white br-7">{{ recetteKitDuJour.modePaiement }} </span>
+                                            {% if recetteEnsembleDuJour.modePaiement == 'PRIS EN CHARGE' %}
+                                                <span class="bg-info px-2 py-1 text-white br-7">{{ recetteEnsembleDuJour.modePaiement }} </span>
                                                 {% else %}
-                                                <span class="bg-danger px-2 py-1 text-white br-7">{{ recetteKitDuJour.modePaiement }} </span>
+                                                <span class="bg-danger px-2 py-1 text-white br-7">{{ recetteEnsembleDuJour.modePaiement }} </span>
                                             {% endif %}
                                         {% endif %}
                                     </td>
                                     <td class="infoTable">
-                                        <span class="badge bg-primary rounded-pill">{{ recetteKitDuJour.nombre  }}</span>
+                                        <span class="badge bg-primary rounded-pill">{{ recetteEnsembleDuJour.nombre|number_format  }}</span>
                                     </td>
                                     <td class="infoTable" style="vertical-align: middle !important;">
-                                        <h5><span class="badge badge-default">{{ recetteKitDuJour.montant }} FCFA</span></h5>
+                                        <h5><span class="badge badge-default">{{ recetteEnsembleDuJour.montant|number_format }} FCFA</span></h5>
                                     </td>
                                     
                                 </tr>
@@ -352,7 +352,7 @@
                                     <i class="fa fa-star"></i> {% trans %}Référence{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
-                                    <i class="fa fa-user"></i> {% trans %}Patient{% endtrans %}
+                                    <i class="fa fa-user"></i> {% trans %}Client{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
                                     <i class="fa fa-calendar"></i> Date
@@ -382,7 +382,7 @@
                                     <i class="fa fa-star"></i> {% trans %}Référence{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
-                                    <i class="fa fa-user"></i> {% trans %}Patient{% endtrans %}
+                                    <i class="fa fa-user"></i> {% trans %}Client{% endtrans %}
                                 </th>
                                 <th class="wd-15p border-bottom-0">
                                     <i class="fa fa-calendar"></i> Date
@@ -420,7 +420,7 @@
                                     </td>
 
                                     <td class="infoTable">
-                                        {{ facture.nomPatient ? facture.nomPatient : facture.patient.nom }}
+                                        {{ facture.nomClient ? facture.nomClient : facture.client.nom }}
                                     </td>
 
                                     <td class="infoTable">{{ facture.dateFactureAt | date('d-m-Y') }} <br> {% trans %}à{% endtrans %} {{ facture.heure | date('H:i:s') }}</td>

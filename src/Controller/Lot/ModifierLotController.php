@@ -85,14 +85,14 @@ class ModifierLotController extends AbstractController
                     ->setSlug($slug.$id)
                     ->setEnregistreLeAt(new DateTime('now'))
                     ->setHeureAt(new DateTime('now'))
-                    ->setPrixVente($lot->getPrixAchat() * $lot->getCoef())
+                    ->setPrixVente($lot->getPrixAchat())
             ;
 
             $produitsDuLot = $lot->getProduits();
 
             foreach ($produitsDuLot as $produit) 
             {
-                $produit->setPrixVente($lot->getPrixAchat() * $lot->getCoef());
+                $produit->setPrixVente($lot->getPrixAchat());
 
                 $this->em->persist($produit);
             }

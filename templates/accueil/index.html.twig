@@ -28,7 +28,14 @@
 	</style>
 {% endblock %}
 {% block body %}
-
+{% for message in app.flashes('info')  %}
+	
+	<div class="alert alert-danger" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">X</button>
+		<i class="fe fe-x-circle me-2" aria-hidden="true"></i>{{ message }}
+    </div>
+	
+{% endfor %}
 <!-- App-Content -->
 
     <div class="hor-content main-content">
@@ -41,10 +48,6 @@
 
 			{% if is_granted('ROLE_REGIES_DES_RECETTES') %}
                 {% include "includes/_accueilRegiesDesRecettes.html.twig" %}
-            {% endif %}
-
-            {% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_SECRETAIRE') %}
-                {% include "includes/_accueilPharmacien.html.twig" %}
             {% endif %}
 
 			{% if is_granted('ROLE_DIRECTEUR') %}

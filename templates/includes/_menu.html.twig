@@ -1,7 +1,4 @@
 
-
-		
-
 				{% if app.user %}
 
 					{% if licence == 1 %}
@@ -112,7 +109,7 @@
 													{% endif %}
 												</li>
 
-												{% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_SECRETAIRE')  %}
+												{# {% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_SECRETAIRE')  %}
 													<li aria-haspopup="true">
 														<a href="javascript:void(0);" class="sub-icon">
 															<svg class="hor-icon" class="side-menu__icon" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,31 +117,31 @@
 																<path opacity="0.7" d="M17.5774 4.43152L15.5774 3.38197C13.8218 2.46066 12.944 2 11.9997 2C11.0554 2 10.1776 2.46066 8.42197 3.38197L6.42197 4.43152C4.31821 5.53552 3.24291 6.09982 2.6377 7.07264L11.9997 12L21.3617 7.07264C20.7564 6.09982 19.6811 5.53552 17.5774 4.43152Z" fill="#1C274C"/>
 																<path opacity="0.5" d="M21.4026 7.13986C21.3893 7.11727 21.3758 7.09491 21.362 7.07275L12 12.0001V22.0001C12.9443 22.0001 13.8221 21.5395 15.5777 20.6181L17.5777 19.5686C19.7294 18.4395 20.8052 17.8749 21.4026 16.8604C22 15.8459 22 14.5834 22 12.0586V11.9416C22 9.41678 22 8.15436 21.4026 7.13986Z" fill="#1C274C"/>
 															</svg>
-															{% trans %}Kits{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
+															{% trans %}Ensembles{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
 														</a>
 														<ul class="sub-menu border-primary">
 															<li aria-haspopup="true">
-																<a href="{{ path ('ajouter_kit') }}"><i class="fe fe-plus"></i>{% trans %}Ajouter un kit{% endtrans %}</a>
+																<a href="{{ path ('ajouter_ensemble') }}"><i class="fe fe-plus"></i>{% trans %}Ajouter un ensemble{% endtrans %}</a>
 															</li>
 															<li aria-haspopup="true">
-																<a href="{{ path ('liste_kit', {'a': 1 }) }}"><i class="fe fe-list"></i>{% trans %}Afficher les kits{% endtrans %}</a>
+																<a href="{{ path ('liste_ensemble', {'a': 1 }) }}"><i class="fe fe-list"></i>{% trans %}Afficher les ensembles{% endtrans %}</a>
 															</li>
 														</ul>
 													</li>
-												{% endif %}
+												{% endif %} #}
 
-												{% if is_granted('ROLE_CAISSIERE') %}
+												{# {% if is_granted('ROLE_CAISSIERE') %}
 													<li aria-haspopup="true">
-														<a href="{{ path ('liste_kit', {'a': 1 }) }}" class="sub-icon">
+														<a href="{{ path ('liste_ensemble', {'a': 1 }) }}" class="sub-icon">
 															<svg class="hor-icon" class="side-menu__icon" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 																		<path d="M8.42229 20.6181C10.1779 21.5395 11.0557 22.0001 12 22.0001V12.0001L2.63802 7.07275C2.62423 7.09491 2.6107 7.11727 2.5974 7.13986C2 8.15436 2 9.41678 2 11.9416V12.0586C2 14.5834 2 15.8459 2.5974 16.8604C3.19479 17.8749 4.27063 18.4395 6.42229 19.5686L8.42229 20.6181Z" fill="#1C274C"/>
 																		<path opacity="0.7" d="M17.5774 4.43152L15.5774 3.38197C13.8218 2.46066 12.944 2 11.9997 2C11.0554 2 10.1776 2.46066 8.42197 3.38197L6.42197 4.43152C4.31821 5.53552 3.24291 6.09982 2.6377 7.07264L11.9997 12L21.3617 7.07264C20.7564 6.09982 19.6811 5.53552 17.5774 4.43152Z" fill="#1C274C"/>
 																		<path opacity="0.5" d="M21.4026 7.13986C21.3893 7.11727 21.3758 7.09491 21.362 7.07275L12 12.0001V22.0001C12.9443 22.0001 13.8221 21.5395 15.5777 20.6181L17.5777 19.5686C19.7294 18.4395 20.8052 17.8749 21.4026 16.8604C22 15.8459 22 14.5834 22 12.0586V11.9416C22 9.41678 22 8.15436 21.4026 7.13986Z" fill="#1C274C"/>
 																	</svg>
-															{% trans %}Kits{% endtrans %}
+															{% trans %}Ensembles{% endtrans %}
 														</a>
 													</li>
-												{% endif %}
+												{% endif %} #}
 												
 												{% if is_granted('ROLE_REGIES_DES_RECETTES') %}
 
@@ -336,14 +333,11 @@
 
 															<svg class="hor-icon" class="svg-icon"  xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><g><rect fill="none" height="24" width="24"/></g><g><g><rect height="7" width="3" x="4" y="10"/><rect height="7" width="3" x="10.5" y="10"/><rect height="3" width="20" x="2" y="19"/><rect height="7" width="3" x="17" y="10"/><polygon points="12,1 2,6 2,8 22,8 22,6"/></g></g></svg>
 																	
-															{% trans %}Sociétés, patients & Utilisateurs{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
+															{% trans %}Sociétés, clients & Utilisateurs{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
 														</a>
 														<ul class="sub-menu border-primary">
 															<li aria-haspopup="true">
 																<a href="{{ path ('afficher_societe', {'a': 1 }) }}"><i class="fa fa-building-o me-2"></i>{% trans %}Afficher les sociétés{% endtrans %}</a>
-															</li>
-															<li aria-haspopup="true">
-																<a href="{{ path ('afficher_patient', {'a': 1 }) }}"><i class="fa fa-users me-2"></i>{% trans %}Afficher les pris en charge{% endtrans %}</a>
 															</li>
 
 															<li aria-haspopup="true">
@@ -398,7 +392,7 @@
 														
 														<li aria-haspopup="true"><a href="{{ path ('afficher_produit', {'a': 1 }) }}"><i class="fa fa-spoon me-2"></i>{% trans %}Afficher les produits{% endtrans %}</a></li>
 														
-														<li aria-haspopup="true"><a href="{{ path ('liste_kit', {'a': 1 }) }}"><i class="fe fe-package me-2"></i>{% trans %}Afficher les kits{% endtrans %}</a></li>
+														{# <li aria-haspopup="true"><a href="{{ path ('liste_ensemble', {'a': 1 }) }}"><i class="fe fe-package me-2"></i>{% trans %}Afficher les ensembles{% endtrans %}</a></li> #}
 														{# <li aria-haspopup="true"><a href="{{ path ('liste_examen', {'a': 1 }) }}"><i class="fe fe-package me-2"></i>{% trans %}Afficher les examens{% endtrans %}</a></li> #}
 													
 													</ul>
@@ -498,14 +492,14 @@
 
 														<svg class="hor-icon" class="svg-icon"  xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><g><rect fill="none" height="24" width="24"/></g><g><g><rect height="7" width="3" x="4" y="10"/><rect height="7" width="3" x="10.5" y="10"/><rect height="3" width="20" x="2" y="19"/><rect height="7" width="3" x="17" y="10"/><polygon points="12,1 2,6 2,8 22,8 22,6"/></g></g></svg>
 																
-														{% trans %}Sociétés, patients & Utilisateurs{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
+														{% trans %}Clients & Utilisateurs{% endtrans %} <i class="fa fa-angle-down horizontal-icon"></i>
 													</a>
 													<ul class="sub-menu border-primary">
-														<li aria-haspopup="true">
+														{# <li aria-haspopup="true">
 															<a href="{{ path ('afficher_societe', {'a': 1 }) }}"><i class="fa fa-building-o me-2"></i>{% trans %}Afficher les sociétés{% endtrans %}</a>
-														</li>
+														</li> #}
 														<li aria-haspopup="true">
-															<a href="{{ path ('afficher_patient', {'a': 1 }) }}"><i class="fa fa-users me-2"></i>{% trans %}Afficher les pris en charge{% endtrans %}</a>
+															<a href="{{ path ('afficher_client', {'a': 1 }) }}"><i class="fa fa-users me-2"></i>{% trans %}Afficher les clients{% endtrans %}</a>
 														</li>
 
 														<li aria-haspopup="true">

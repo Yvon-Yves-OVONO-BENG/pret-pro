@@ -33,62 +33,67 @@ class ImpressionLesFacturesService extends FPDF
                 $positionY = 50;
                 $pdf->SetXY(15, $positionY);
 
-                // $pdf->Image('../public/images/qrcode/'.$facture->getQrCode(), 10, 40, 500);
-                // $pdf->Image('../public/images/qrcode/'.$facture->getQrCode(), 165, 67, 34, 34);
-                
-                $pdf->Ln(5);
-                $pdf->SetFont('Arial', 'B', 12);
-                $pdf->Cell(100, 5, 'DETAILS DE LA FACTURE : '.$facture->getReference(), 0, 0, 'L', 0);
+                $pdf->Image('images/qrCode/'.$facture->getQrCode(), 150, 70, 25, 25);
+        
+        $pdf->Ln(-8);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->SetX(15);
+        $pdf->Cell(65, 5, 'PRET-PRO', 0, 0, 'C', 0);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 0);
+        $pdf->Cell(65, 5, 'CLIENT', 0, 1, 'C', 0);
+        
+        $pdf->SetFont('Arial', '', 8);
+        $pdf->Cell(65, 5, utf8_decode('Yaoundé, Mfoundi, Centre, Cameroun'), 0, 0, 'C', 0);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 0);
+        $pdf->Cell(65, 5, utf8_decode($facture->getNomClient()), 0, 1, 'C', 0);
 
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(80.5, 5, 'Date de la facture : '.date_format($facture->getDateFactureAt(), 'd/m/Y').utf8_decode(' à ').date_format($facture->getHeure(), 'H:i:s'), 0, 1, 'R', 0);
-                $pdf->SetFont('Arial', 'I', 10);
-                $pdf->SetX(15);
-                $pdf->Cell(50, 5, 'DETAILS OF ORDER', 0, 0, 'L', 0);
+        $pdf->Cell(65, 5, utf8_decode('Tel : (+237) 697 993 386 / 673 788 308'), 0, 0, 'C', 0);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 0);
+        $pdf->Cell(65, 5, utf8_decode($facture->getContactClient()), 0, 1, 'C', 0);
 
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(87, 5, 'PAR : ', 0, 0, 'R', 0);
-                $pdf->Cell(50, 5, $facture->getCaissiere() ? utf8_decode($facture->getCaissiere()->getNom()) : "CAISSIERE", 0, 1, 'L', 0);
+        $pdf->Cell(65, 5, utf8_decode('Email : pretpro@gmail.com'), 0, 0, 'C', 0);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 0);
+        $pdf->Cell(65, 5, utf8_decode($facture->getEmailClient()), 0, 1, 'C', 0);
 
-                $pdf->Ln(5);
-                $pdf->SetX(15);
-                $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(65, 5, utf8_decode(''), 0, 0, 'C', 0);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 0);
+        $pdf->Cell(65, 5, utf8_decode("Adresse : ".$facture->getAdresseClient()), 0, 1, 'C', 0);
 
-                if ($facture->getPatient()) 
-                {
-                    $pdf->Cell(0, 5, utf8_decode("Nom du client ".$facture->getPatient()->getNom()), 0, 1, 'L', 0);
-                } 
-                else 
-                {
-                    $pdf->Cell(0, 5, utf8_decode("Nom du client :  ".$facture->getNomPatient()), 0, 1, 'L', 0);
-                }
-                
-                
-                $pdf->SetX(15);
-                $pdf->SetFont('Arial', '', 10);
-                $pdf->Cell(0, 5, utf8_decode("Téléphone : ".$facture->getContactPatient() ? $facture->getContactPatient() : "".","), 0, 1, 'L', 0);
 
-                $pdf->SetFont('Arial', '', 10);
-                $pdf->SetX(15);
-                $pdf->Cell(40, 5, utf8_decode("Etat de la facture : "), 0, 0, 'L', 0);
-                $pdf->SetFont('Arial', 'B', 10);
-                $pdf->Cell(0, 5, utf8_decode($facture->getEtatFacture() ? $facture->getEtatFacture()->getEtatFacture() : ""), 0, 1, 'L', 0);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetX(15);
+        $pdf->Cell(100, 5, utf8_decode('Référence : '.$facture->getReference()), 0, 1, 'L', 1);
+        
+        $pdf->SetX(15);
+        $pdf->Cell(100, 5, 'Date de la facture : '.date_format($facture->getDateFactureAt(), 'd/m/Y').utf8_decode(' à ').date_format($facture->getHeure(), 'H:i:s'), 0, 1, 'L', 1);
+        
+        $pdf->SetX(15);
+        $pdf->SetFont('Arial', 'B', 8);
+        $pdf->Cell(10, 5, 'PAR : ', 0, 0, 'L', 1);
+        $pdf->Cell(90, 5, $facture->getCaissiere() ? utf8_decode($facture->getCaissiere()->getNom()) : "CAISSIERE", 0, 1, 'L', 1);
 
-                $pdf->SetX(15);
-                $pdf->SetFont('Arial', '', 10);
-                $pdf->Cell(45, 5, utf8_decode("Mode de paiement choisi : "), 0, 0, 'L', 0);
-                $pdf->SetFont('Arial', 'B', 10);
-                $pdf->Cell(0, 5, utf8_decode($facture->getModePaiement() ? $facture->getModePaiement()->getModePaiement() : ""), 0, 1, 'L', 0);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetX(15);
+        $pdf->Cell(30, 5, utf8_decode("Etat de la facture : "), 0, 0, 'L', 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(70, 5, utf8_decode($facture->getEtatFacture() ? $facture->getEtatFacture()->getEtatFacture() : ""), 0, 1, 'L', 1);
 
-                $pdf->SetX(15);
-                $pdf->Cell(75, 5, utf8_decode("Cette facture s'élève à un montant de : "), 0, 0, 'L', 0);
-                $pdf->SetFont('Arial', 'B', 10);
-                $pdf->Cell(0, 5, utf8_decode(number_format($facture->getNetApayer(), 0, '', ' ')." FCFA"), 0, 1, 'L', 0);
+        $pdf->SetX(15);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(45, 5, utf8_decode("Mode de paiement choisi : "), 0, 0, 'L', 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(55, 5, utf8_decode($facture->getModePaiement() ? $facture->getModePaiement()->getModePaiement() : ""), 0, 1, 'L', 1);
 
-                $positionY = 80;
-                $pdf->Ln(5);
-                $pdf->SetFont('Arial', 'B', 10);
-                $pdf->SetX(15);
+        $pdf->SetX(15);
+        $pdf->Cell(75, 5, utf8_decode("Cette facture s'élève à un montant de : "), 0, 0, 'L', 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(25, 5, utf8_decode(number_format($facture->getNetApayer(), 0, '', ' ')." FCFA"), 0, 1, 'L', 1);
+        $pdf->SetX(15);
+        $pdf->Cell(100, 8, utf8_decode((new ChiffreEnLettreService($facture->getNetApayer(), 'Francs CFA'))->convert('fr-FR')), 0, 1, 'C',1);
+
+        $positionY = 80;
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetX(15);
                 
                 $pdf->Cell(0, 10, utf8_decode('Eléménts de la facture'), 0, 1, 'L', 0);
 

@@ -78,7 +78,7 @@ class ImpressionDesExamensService extends FPDF
         $pdf->SetX($pdf->GetX() + 15);
         $pdf->SetY($pdf->GetY() + 15);
         $pdf->SetFont('Arial', 'BU', 12);
-        $pdf->Cell(150, 5, utf8_decode('LE PHARMACIEN'), 0, 0, 'R');
+        $pdf->Cell(150, 5, utf8_decode(''), 0, 0, 'R');
 
         return $pdf;
     }

@@ -85,7 +85,7 @@ class AjouterLotController extends AbstractController
             #je met le nom du lot en CAPITAL LETTER
             $lot->setReference($this->strService->strToUpper($lot->getReference()))
                 ->setSlug($slug.$id)
-                ->setPrixVente($lot->getPrixAchat() * $lot->getCoef())
+                ->setPrixVente($lot->getPrixAchat())
                 ->setEnregistreLeAt(new DateTime('now'))
                 ->setHeureAt(new DateTime('now'))
                 ->setEnregistrePar($this->getUser())

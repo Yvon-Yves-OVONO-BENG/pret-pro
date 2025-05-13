@@ -21,6 +21,17 @@ class ProfilRepository extends ServiceEntityRepository
         parent::__construct($registry, Profil::class);
     }
 
+    public function getProfilSansAdmin()
+    {
+        return $this->createQueryBuilder('p')
+        ->innerJoin('p.user', 'u')
+        ->innerJoin('u.typeUtilisateur', 't')
+        ->where('t.typeUtilisateur != :roleAdmin')
+        ->setParameter('roleAdmin', 'ADMINISTRATEUR')
+        ->getQuery()
+        ->getResult();
+    }
+
     //    /**
     //     * @return Profil[] Returns an array of Profil objects
     //     */

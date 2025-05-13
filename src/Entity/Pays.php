@@ -18,14 +18,6 @@ class Pays
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pays = null;
 
-    #[ORM\OneToMany(targetEntity: Patient::class, mappedBy: 'pays')]
-    private Collection $patients;
-
-    public function __construct()
-    {
-        $this->patients = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -43,33 +35,4 @@ class Pays
         return $this;
     }
 
-    /**
-     * @return Collection<int, Patient>
-     */
-    public function getPatients(): Collection
-    {
-        return $this->patients;
-    }
-
-    public function addPatient(Patient $patient): static
-    {
-        if (!$this->patients->contains($patient)) {
-            $this->patients->add($patient);
-            $patient->setPays($this);
-        }
-
-        return $this;
-    }
-
-    public function removePatient(Patient $patient): static
-    {
-        if ($this->patients->removeElement($patient)) {
-            // set the owning side to null (unless already changed)
-            if ($patient->getPays() === $this) {
-                $patient->setPays(null);
-            }
-        }
-
-        return $this;
-    }
 }

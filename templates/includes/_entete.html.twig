@@ -5,16 +5,16 @@
             <div class="d-flex">
                 <a class="animated-arrow hor-toggle horizontal-navtoggle"><span></span></a>
                 <a class="header-brand" href="">
-                    <img src="{{ asset ('assets/images/brand/logoPharmacy.png') }}" class="header-brand-img desktop-lgo" alt="Pharmacy logo">
-                    <img src="{{ asset ('assets/images/brand/logoPharmacy.png') }}" class="header-brand-img dark-logo" alt="Pharmacy logo">
-                    <img src="{{ asset ('assets/images/brand/logoPharmacy.png') }}" class="header-brand-img mobile-logo" alt="Pharmacy logo">
-                    <img src="{{ asset ('assets/images/brand/logoPharmacy.png') }}" class="header-brand-img darkmobile-logo" alt="Pharmacy logo">
+                    <img src="{{ asset ('assets/images/brand/logo.png') }}" class="header-brand-img desktop-lgo" alt="Prêt-Pro logo">
+                    <img src="{{ asset ('assets/images/brand/logo.png') }}" class="header-brand-img dark-logo" alt="Prêt-Pro logo">
+                    <img src="{{ asset ('assets/images/brand/logo.png') }}" class="header-brand-img mobile-logo" alt="Prêt-Pro logo">
+                    <img src="{{ asset ('assets/images/brand/logo.png') }}" class="header-brand-img darkmobile-logo" alt="Prêt-Pro logo">
                 </a>
                 <div class="mt-1 d-md-block d-none text-center">
                     <form class="form-inline text-center">
                         <div class="search-element text-center">
                             <h3 class="mt-2 page-title mb-0 text-primary" style="font-size: 20px; text-align:center; color: #ffffff !important; ">
-                                <b>{% trans %}Pharmacy{% endtrans %} - {{ app.user.typeUtilisateur.typeUtilisateur }}</b>
+                                <b>{% trans %}Prêt-Pro{% endtrans %} - {{ app.user.typeUtilisateur.typeUtilisateur }}</b>
                             </h3>
                             
                         </div>
@@ -82,7 +82,7 @@
                                     <div class="dropdown country-selector d-flex">
                                         <a href="javascript:void(0);" class="nav-link leading-none" data-bs-toggle="dropdown">
                                             <span class="header-avatar1">
-                                                <span id="totalApayerPatient" class="fs-14 font-weight-semibold "> 	
+                                                <span id="totalApayerClient" class="fs-14 font-weight-semibold "> 	
                                                 {# Total : {{ panierService.total|number_format }} FCFA #}
                                                 Total : {{ app.session.get('totalApayer')|number_format }} FCFA
                                                 

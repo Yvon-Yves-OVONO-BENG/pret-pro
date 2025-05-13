@@ -24,7 +24,7 @@
                                 <i class="fa fa-file me-2 fs-14"></i> {% trans %}Factures{% endtrans %}
                             </a>
                         {% endif %}
-                            {% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR') %}
+                            {% if is_granted('ROLE_ADMINISTRATEUR') %}
                             <a href="{{ path ('afficher_produit', {'a': 1 }) }}" class="btn btn-outline-primary btn-pill">
                                 <i class="fa fa-database me-2 fs-14"></i> {% trans %}Produits{% endtrans %}
                             </a>

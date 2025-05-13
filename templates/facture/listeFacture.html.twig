@@ -32,6 +32,14 @@
 
 
 {% block body %}
+{% for message in app.flashes('info')  %}
+	
+	<div class="alert alert-success" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+		<i class="fa fa-check-circle-o me-2" aria-hidden="true"></i>{{ message }}
+    </div>
+	
+{% endfor %}
 	<!-- App-Content -->
 	<div class="hor-content main-content">
 		<div class="container">

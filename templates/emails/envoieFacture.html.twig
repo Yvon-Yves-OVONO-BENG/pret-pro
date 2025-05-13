@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Facture {{ app.session.get('facture').nomClient }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            margin: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Merci pour votre achat chez Prêt-Pro</h1>
+    </div>
+    <div class="content">
+        <p>Bonjour {{ app.session.get('facture').nomClient }},</p>
+        <p>
+            Nous vous remercions pour votre achat. Vous trouverez en pièce jointe la facture correspondant à votre commande.
+        </p>
+        <p>
+            Détails de la commande :
+        </p>
+        <ul>
+            <li><strong>Numéro de facture :</strong> {{ app.session.get('facture').reference }}</li>
+            <li><strong>Date :</strong> {{ app.session.get('facture').dateFactureAt|date("d/m/Y") }}</li>
+            <li><strong>Montant total :</strong> {{ app.session.get('facture').NetApayer|number_format(2, ',', ' ') }} FCFA</li>
+            <li><strong>Avance :</strong> {{ app.session.get('facture').avance|number_format(2, ',', ' ') }} FCFA</li>
+            <li><strong>Reste :</strong> {{ (app.session.get('facture').NetApayer - app.session.get('facture').avance)|number_format(2, ',', ' ') }} FCFA</li>
+        </ul>
+        <p>
+            Si vous avez des questions ou si vous avez besoin d’assistance, n’hésitez pas à nous contacter à l’adresse 
+            <a href="mailto:ovonobeng5@gmail.com">Prêt-Pro</a>.
+        </p>
+        <p>Merci de votre confiance.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; {{ "now"|date("Y") }} | Prêt-Pro | Tous droits réservés.</p>
+    </div>
+</body>
+</html>

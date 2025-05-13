@@ -114,10 +114,6 @@ class AjouterUtilisateurController extends AbstractController
                     $utilisateur->setRoles([ConstantsClass::ROLE_DIRECTEUR]);
                     break;
 
-                case ConstantsClass::PHARMACIEN:
-                    $utilisateur->setRoles([ConstantsClass::ROLE_PHARMACIEN]);
-                    break;
-
                 case ConstantsClass::REGIES_DES_RECETTES:
                     $utilisateur->setRoles([ConstantsClass::ROLE_REGIES_DES_RECETTES]);
                     break;

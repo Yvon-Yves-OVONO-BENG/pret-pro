@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         ///je cree un nouvel objet XMLHttpRequest
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/pharmacie/public/produit/retirer-produit', true);
+			xhr.open('POST', '/pretpro/public/produit/retirer-produit', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function() 
 			{

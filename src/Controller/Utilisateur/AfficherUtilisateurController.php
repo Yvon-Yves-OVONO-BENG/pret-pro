@@ -58,7 +58,7 @@ class AfficherUtilisateurController extends AbstractController
         }
         
         # je récupère tous les utilisateurs
-        $utilisateurs = $this->profilRepository->findAll();
+        $utilisateurs = $this->profilRepository->getProfilSansAdmin();
         
         return $this->render('utilisateur/afficherUtilisateur.html.twig', [
             'licence' => 1,

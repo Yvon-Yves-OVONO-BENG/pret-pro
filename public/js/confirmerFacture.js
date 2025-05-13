@@ -1,28 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 	//je sélectionne les champs de mon formulaire avec leurs ID
-	const prisEnCharge = document.getElementById('confirmer_panier_patient');
-	const nomPatient = document.getElementById('confirmer_panier_nomPatient');
-	const contactPatient = document.getElementById('confirmer_panier_contactPatient');
+	const prisEnCharge = document.getElementById('confirmer_panier_client');
+	const nomClient = document.getElementById('confirmer_panier_nomClient');
+	const contactClient = document.getElementById('confirmer_panier_contactClient');
 	const bouton = document.getElementById('boutonEnvoie');
 
 	////////////EVENEMENT SUR LA LISTE DEROULANTE
 	prisEnCharge.addEventListener('change', function() {
 		if(prisEnCharge.value.trim()) {
 			console.log(prisEnCharge.value);
-			nomPatient.disabled = true;
-			nomPatient.value = "";
+			nomClient.disabled = true;
+			nomClient.value = "";
 		}
 		else
 		{
-			nomPatient.disabled = false;
-			nomPatient.required = true;
+			nomClient.disabled = false;
+			nomClient.required = true;
 		}
 	});
 
 	////////////EVENEMENT SUR LE CHAMP TEXT
-	nomPatient.addEventListener('input', function() {
-		if (nomPatient.value.trim()) {
+	nomClient.addEventListener('input', function() {
+		if (nomClient.value.trim()) {
 			prisEnCharge.disabled = true;
 			prisEnCharge.value = "";
 

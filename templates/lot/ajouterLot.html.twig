@@ -51,7 +51,7 @@
                             <div class="card-body ">
                                 {{ form_start(formLot, {'attr': {'class':'row g-4 needs-validation', 'novalidate':""}})}}
                                     <div class="row" style="margin-top: 15px !important;">
-                                        <div class="col-md-4 position-relative">
+                                        <div class="col-md-3 position-relative">
                                             <label for="validationCustom01" class="form-label">{% trans %}Référence{% endtrans %}</label>
                                             {{ form_widget(formLot.reference, {'attr': {'id':'validationCustom01'}}) }}
 
@@ -59,26 +59,17 @@
                                                 {% trans %}Veuillez saisir une référence !{% endtrans %}
                                             </div>
                                         </div>
-                                        <div class="col-md-4 position-relative">
-                                            <label for="validationCustom01" class="form-label">{% trans %}Prix d'achat{% endtrans %}</label>
+                                        <div class="col-md-3 position-relative">
+                                            <label for="validationCustom01" class="form-label">{% trans %}Prix de vente{% endtrans %}</label>
                                             {{ form_widget(formLot.prixAchat, {'attr': {'id':'validationCustom01'}}) }}
 
                                             <div class="invalid-feedback">
                                                 {% trans %}Veuillez saisir le prix d'achat !{% endtrans %}
                                             </div>
                                         </div>
-                                        <div class="col-md-4 position-relative">
-                                            <label for="validationCustom01" class="form-label">{% trans %}Coefficient{% endtrans %}</label>
-                                            {{ form_widget(formLot.coef, {'attr': {'id':'validationCustom01'}}) }}
-
-                                            <div class="invalid-feedback">
-                                                {% trans %}Veuillez saisir le coefficient !{% endtrans %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top: 15px !important;">
+                                    
                                             
-                                        <div class="col-md-4 position-relative">
+                                        <div class="col-md-3 position-relative">
                                             <label for="validationCustom01" class="form-label">{% trans %}Quantité{% endtrans %}</label>
                                             {{ form_widget(formLot.quantite, {'attr': {'id':'validationCustom01'}}) }}
 
@@ -87,16 +78,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4 position-relative">
-                                            <label for="validationCustom01" class="form-label">{% trans %}Date péremption{% endtrans %}</label>
-                                            {{ form_widget(formLot.datePeremptionAt, {'attr': {'id':'validationCustom01'}}) }}
-
-                                            <div class="invalid-feedback">
-                                                {% trans %}Veuillez saisir une date de péremption !{% endtrans %}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4 position-relative">
+                                        <div class="col-md-3 position-relative">
                                             <label for="validationCustom01" class="form-label">{% trans %}Type produit{% endtrans %}</label>
                                             {{ form_widget(formLot.typeProduit, {'attr': {'id':'validationCustom01'}}) }}
 

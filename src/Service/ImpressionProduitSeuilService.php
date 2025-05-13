@@ -28,7 +28,37 @@ class ImpressionProduitSeuilService extends FPDF
         $pdf = new Pagination();
         $pdf->addPage('P');
 
-        $pdf = $this->entetePortrait->entetePortrait($pdf);
+        // $pdf = $this->entetePortrait->entetePortrait($pdf);
+        $pdf->Image('../public/assets/images/brand/logo.png', 30, 12, 25);
+		$pdf->Image('../public/assets/images/brand/arrierePlan.png', 95, 190, 150);
+		$pdf->SetFont('Helvetica', 'B', 11);
+		// fond de couleur gris (valeurs en RGB)
+		$pdf->setFillColor(229, 255, 255);
+		// position du coin supérieur gauche par rapport à la marge gauche (mm)
+
+
+		$pdf->SetX(15);
+		$pdf->Cell(70, 4, utf8_decode(""), 0, 0, 'C', 0);
+		$pdf->Cell(40, 4, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 4, utf8_decode(''), 0, 1, 'C', 0);
+
+		$pdf->SetX(15);
+		$pdf->SetFont('Helvetica', 'B', 20);
+		$pdf->Cell(70, 2, '', 0, 0, 'C', 0);
+		$pdf->Cell(40, 2, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 15, utf8_decode('PRET-PRO'), 0, 1, 'C', 1);
+        
+		$pdf->SetFont('Helvetica', 'B', 8);
+		$pdf->SetX(15);
+		$pdf->Cell(70, 4, utf8_decode(''), 0, 0, 'C', 0);
+		$pdf->Cell(40, 4, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 4, utf8_decode("Vous habiller, c'est notre devoir"), 0, 1, 'C', 0);
+
+		$pdf->SetX(15);
+		$pdf->SetFont('Helvetica', 'B', 8);
+		$pdf->Cell(70, 2, '', 0, 0, 'C', 0);
+		$pdf->Cell(40, 2, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 2, '******', 0, 1, 'C', 0);
 
         $pdf->SetLeftMargin(10);
 
@@ -39,7 +69,7 @@ class ImpressionProduitSeuilService extends FPDF
         // $pdf->Image('../public/images/qrcode/'.$facture->getQrCode(), 165, 67, 34, 34);
         
         $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(0, 5, 'ETAT DES MEDICAMENTS SEUILS', 0, 1, 'C', 0);
+        $pdf->Cell(0, 5, 'ETAT DES PRODUITS SEUILS', 0, 1, 'C', 0);
         $pdf->SetFont('Arial', 'BI', 7);
         $pdf->Cell(0, 5, 'Date : '. date_format(new DateTime(), 'd-m-Y H:i:s'), 0, 1, 'C', 0);
         

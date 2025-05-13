@@ -34,7 +34,7 @@ class ImpressionProduitSeuilController extends AbstractController
         $produits = [];
 
         $produis = $this->produitRepository->findBy([
-            'kit' => 0,
+            'ensemble' => 0,
             'supprime' => 0
         ], ['libelle' => 'ASC' ]);
 

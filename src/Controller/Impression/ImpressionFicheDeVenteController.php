@@ -5,6 +5,7 @@ namespace App\Controller\Impression;
 use DateTime;
 use App\Entity\ConstantsClass;
 use App\Repository\FactureRepository;
+use App\Repository\HistoriquePaiementRepository;
 use App\Repository\UserRepository;
 use App\Service\ImpressionFicheDeVenteService;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +17,13 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @IsGranted("ROLE_USER", message="Accès refusé. Espace reservé uniquement aux abonnés")
  */
+#[Route('impression/')]
 class ImpressionFicheDeVenteController extends AbstractController
 {
     public function __construct(
-        protected FactureRepository $factureRepository,
         protected UserRepository $userRepository,
+        protected FactureRepository $factureRepository,
+        protected HistoriquePaiementRepository $historiquePaiementRepository,
         protected ImpressionFicheDeVenteService $impressionFicheDeVenteService
     )
     {}
@@ -56,61 +59,10 @@ class ImpressionFicheDeVenteController extends AbstractController
             #date du jour
             $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
 
-            $facturesDuJour = $this->factureRepository->findBy([
-                'caissiere' => $caissiere,
-                'dateFactureAt' => $aujourdhui,
-                'annulee' => 0
-            ], ['dateFactureAt' => 'DESC']);
-
-            #mes variables
-            $nombreCashDuJour = 0;
-            $montantCashDuJour = 0;
-            $montantAvanceCashDuJour = 0;
+            $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+                'dateAvanceAt' => $aujourdhui, 'recuPar' => $caissiere]);
             
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
-            $montantAvancePrisEnChargeDuJour = 0;
-            
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
-            $montantAvanceCreditDuJour = 0;
-            
-
-            #tableau des factures 
-            $cashs = [];
-            $prisEnCharges = [];
-            $credits = [];
-
-            foreach ($facturesDuJour as $factureDuJour) 
-            {
-                switch ($factureDuJour->getModePaiement()->getModePaiement()) {
-                    case ConstantsClass::CASH:
-                        $nombreCashDuJour = $nombreCashDuJour + 1;
-                        $montantCashDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCashDuJour += $factureDuJour->getAvance();
-
-                        $cashs[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getNetApayer();
-                        $montantAvancePrisEnChargeDuJour += $factureDuJour->getAvance();
-                        $prisEnCharges[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCreditDuJour += $factureDuJour->getAvance();
-                        $credits[] = $factureDuJour;
-                        break;
-                    
-                }
-            }
-            
-            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($nombreCashDuJour, $montantCashDuJour, $nombrePrisEnChargeDuJour, $montantPrisEnChargeDuJour, $nombreCreditDuJour, $montantCreditDuJour, $cashs, $prisEnCharges, $credits, $montantAvanceCashDuJour,
-            $montantAvancePrisEnChargeDuJour, $montantAvanceCreditDuJour, $caissiere);
+            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($historiquesPaiement,$caissiere);
             
 
         } 
@@ -118,61 +70,14 @@ class ImpressionFicheDeVenteController extends AbstractController
         {
             $caissiere = $this->userRepository->find($recette);
 
-            $facturesDuJour = $this->factureRepository->findBy([
-                'caissiere' => $caissiere,
-                'annulee' => 0
-            ], ['dateFactureAt' => 'DESC']);
+            #date du jour
+            $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
+
+            $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+                'dateAvanceAt' => $aujourdhui, 'recuPar' => $caissiere]);
             
-            #mes variables
-            $nombreCashDuJour = 0;
-            $montantCashDuJour = 0;
-            $montantAvanceCashDuJour = 0;
-            
-
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
-            $montantAvancePrisEnChargeDuJour = 0;
-            
-
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
-            $montantAvanceCreditDuJour = 0;
-            
-
-            #tableau des factures 
-            $cashs = [];
-            $prisEnCharges = [];
-            $credits = [];
-
-            foreach ($facturesDuJour as $factureDuJour) 
-            {
-                switch ($factureDuJour->getModePaiement()->getModePaiement()) {
-                    case ConstantsClass::CASH:
-                        $nombreCashDuJour = $nombreCashDuJour + 1;
-                        $montantCashDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCashDuJour += $factureDuJour->getAvance();
-                        $cashs[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getNetApayer();
-                        $montantAvancePrisEnChargeDuJour += $factureDuJour->getAvance();
-                        $prisEnCharges[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCreditDuJour += $factureDuJour->getAvance();
-                        $credits[] = $factureDuJour;
-                        break;
-                    
-                }
-            }
            
-            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($nombreCashDuJour, $montantCashDuJour, $nombrePrisEnChargeDuJour, $montantPrisEnChargeDuJour, $nombreCreditDuJour, $montantCreditDuJour, $cashs, $prisEnCharges, $credits, $montantAvanceCashDuJour,
-            $montantAvancePrisEnChargeDuJour,$montantAvanceCreditDuJour, $caissiere);
+            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($historiquesPaiement,$caissiere);
             
         }
         elseif ($request->request->has('impressionFicheVente')) 
@@ -182,69 +87,25 @@ class ImpressionFicheDeVenteController extends AbstractController
             $dateFin = date_create($request->request->get('dateFin'));
 
             $etatFacture = null;
+
+            $caissiere = $this->userRepository->find($user->getId());
             #ses factures du jours
             if (in_array(ConstantsClass::ROLE_CAISSIERE, $user->getRoles())) 
             {
-                $facturesDuJour = $this->factureRepository->facturePeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
+                $historiquesPaiement = $this->historiquePaiementRepository->historiquePaiementPeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
             } 
             else 
             {
-                $facturesDuJour = $this->factureRepository->facturePeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
+                $historiquesPaiement = $this->historiquePaiementRepository->historiquePaiementPeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
             }
+
+            #date du jour
+            $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
+
+            // $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+            //     'dateAvanceAt' => $aujourdhui, 'recuPar' => $caissiere]);
             
-            
-            #mes variables
-            $nombreCashDuJour = 0;
-            $montantCashDuJour = 0;
-            $montantAvanceCashDuJour = 0;
-            
-
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
-            $montantAvancePrisEnChargeDuJour = 0;
-            
-
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
-            $montantAvanceCreditDuJour = 0;
-            
-
-            #tableau des factures 
-            $cashs = [];
-            $prisEnCharges = [];
-            $credits = [];
-
-            foreach ($facturesDuJour as $factureDuJour) 
-            {
-                switch ($factureDuJour->getModePaiement()->getModePaiement()) {
-                    case ConstantsClass::CASH:
-                        $nombreCashDuJour = $nombreCashDuJour + 1;
-                        $montantCashDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCashDuJour += $factureDuJour->getAvance();
-                        $cashs[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getNetApayer();
-                        $montantAvancePrisEnChargeDuJour += $factureDuJour->getAvance();
-                        $prisEnCharges[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCreditDuJour += $factureDuJour->getAvance();
-                        $credits[] = $factureDuJour;
-                        break;
-                    
-                }
-            }
-           
-            $caissiere = $this->userRepository->find($user->getId());
-
-            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($nombreCashDuJour, $montantCashDuJour, $nombrePrisEnChargeDuJour, $montantPrisEnChargeDuJour, $nombreCreditDuJour, $montantCreditDuJour, $cashs, $prisEnCharges, $credits, $montantAvanceCashDuJour,
-            $montantAvancePrisEnChargeDuJour, $montantAvanceCreditDuJour, $caissiere, $dateDebut, $dateFin, 1);
+            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($historiquesPaiement, $caissiere, $dateDebut, $dateFin, 1);
 
         }
         elseif ($recettePeriode != 0) 
@@ -256,134 +117,37 @@ class ImpressionFicheDeVenteController extends AbstractController
             $dateDebut = date_create($dateDebut);
             $dateFin = date_create($dateFin);
 
-            $facturesDuJour = $this->factureRepository->facturePeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
-            
-            #mes variables
-            $nombreCashDuJour = 0;
-            $montantCashDuJour = 0;
-            $montantAvanceCashDuJour = 0;
-            
-
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
-            $montantAvancePrisEnChargeDuJour = 0;
-            
-
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
-            $montantAvanceCreditDuJour = 0;
-            
-
-            #tableau des factures 
-            $cashs = [];
-            $prisEnCharges = [];
-            $credits = [];
-
-            foreach ($facturesDuJour as $factureDuJour) 
-            {
-                switch ($factureDuJour->getModePaiement()->getModePaiement()) {
-                    case ConstantsClass::CASH:
-                        $nombreCashDuJour = $nombreCashDuJour + 1;
-                        $montantCashDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCashDuJour += $factureDuJour->getAvance();
-                        $cashs[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getNetApayer();
-                        $montantAvancePrisEnChargeDuJour += $factureDuJour->getAvance();
-                        $prisEnCharges[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCreditDuJour += $factureDuJour->getAvance();
-                        $credits[] = $factureDuJour;
-                        break;
-                    
-                }
-            }
+            $historiquesPaiement = $this->historiquePaiementRepository->historiquePaiementPeriode($caissiere, $etatFacture, $dateDebut, $dateFin);
             
             $caissiere = $this->userRepository->find($user->getId());
 
-            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($nombreCashDuJour, $montantCashDuJour, $nombrePrisEnChargeDuJour, $montantPrisEnChargeDuJour, $nombreCreditDuJour, $montantCreditDuJour, $cashs, $prisEnCharges, $credits, $montantAvanceCashDuJour,$montantAvancePrisEnChargeDuJour,$montantAvanceCreditDuJour, $caissiere, $dateDebut, $dateFin, 1);
+            #date du jour
+            $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
+
+            // $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+            //     'dateAvanceAt' => $aujourdhui, 'recuPar' => $caissiere]);
+
+            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($historiquesPaiement, $caissiere, $dateDebut, $dateFin, 1);
 
         }
         else 
         {
             #date du jour
             $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
-
-            #ses factures du jours
+            
+            #les historique paiement du jour du jours
             if (in_array(ConstantsClass::ROLE_CAISSIERE, $user->getRoles())) 
             {
-                $facturesDuJour = $this->factureRepository->findBy([
-                    'caissiere' => $user,
-                    'dateFactureAt' => $aujourdhui,
-                    'annulee' => 0
-                ], ['dateFactureAt' => 'DESC']);
+                $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+                    'dateAvanceAt' => $aujourdhui, 'recuPar' => $caissiere]);
             } 
             else 
             {
-                $facturesDuJour = $this->factureRepository->findBy([
-                    'dateFactureAt' => $aujourdhui,
-                    'annulee' => 0
-                ], ['dateFactureAt' => 'DESC']);
-            }
-            
-           
-            #mes variables
-            $nombreCashDuJour = 0;
-            $montantCashDuJour = 0;
-            $montantAvanceCashDuJour = 0;
-            
-
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
-            $montantAvancePrisEnChargeDuJour = 0;
-            
-
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
-            $montantAvanceCreditDuJour = 0;
-            
-
-            #tableau des factures 
-            $cashs = [];
-            $prisEnCharges = [];
-            $credits = [];
-
-            foreach ($facturesDuJour as $factureDuJour) 
-            {
-                switch ($factureDuJour->getModePaiement()->getModePaiement()) {
-                    case ConstantsClass::CASH:
-                        $nombreCashDuJour = $nombreCashDuJour + 1;
-                        $montantCashDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCashDuJour += $factureDuJour->getAvance();
-                        $cashs[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getNetApayer();
-                        $montantAvancePrisEnChargeDuJour += $factureDuJour->getAvance();
-                        $prisEnCharges[] = $factureDuJour;
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getNetApayer();
-                        $montantAvanceCreditDuJour += $factureDuJour->getAvance();
-                        $credits[] = $factureDuJour;
-                        break;
-                    
-                }
+                $historiquesPaiement = $this->historiquePaiementRepository->findBy([
+                    'dateAvanceAt' => $aujourdhui]);
             }
 
-            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($nombreCashDuJour, $montantCashDuJour, $nombrePrisEnChargeDuJour, $montantPrisEnChargeDuJour, $nombreCreditDuJour, $montantCreditDuJour, $cashs, $prisEnCharges, $credits,  $montantAvanceCashDuJour,
-            $montantAvancePrisEnChargeDuJour, $montantAvanceCreditDuJour, $caissiere,);
+            $pdf = $this->impressionFicheDeVenteService->impressionFiheDeVente($historiquesPaiement, $caissiere);
 
         }
         

@@ -3,7 +3,7 @@
 	console.log(lien);
 	lien.click(function() {
 		$.ajax({
-			url: '/pharmacie/public/produit/afficher-produit',
+			url: '/pretpro/public/produit/afficher-produit',
 			type: 'GET',
 			success: function(response) {
 				$('#table-responsive').html(response);
@@ -18,7 +18,7 @@
 	window.onpopstate = function(event) {
 		if (location.pathname === '/produit') {
 			$.ajax({
-				url: '/pharmacie/public/produit/afficher-produit',
+				url: '/pretpro/public/produit/afficher-produit',
 				type: 'GET',
 				success: function(response) {
 					$('.table-responsive').html(response);

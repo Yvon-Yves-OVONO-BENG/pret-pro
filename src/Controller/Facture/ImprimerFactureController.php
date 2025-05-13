@@ -4,7 +4,6 @@ namespace App\Controller\Facture;
 
 use App\Repository\FactureRepository;
 use App\Repository\LigneDeFactureRepository;
-use App\Repository\PatientRepository;
 use App\Service\ImpressionDesFactureService;
 use App\Service\ImpressionFactureService;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,6 @@ class ImprimerFactureController extends AbstractController
 {
     public function __construct(
         protected FactureRepository $factureRepository,
-        protected PatientRepository $patientRepository,
         protected ImpressionFactureService $impressionFactureService,
         protected LigneDeFactureRepository $ligneDeFactureRepository, 
         protected ImpressionDesFactureService $impressionDesFactureService, 
@@ -41,7 +39,7 @@ class ImprimerFactureController extends AbstractController
         
         $pdf = $this->impressionFactureService->impressionFacture($facture, $detailsFacture);
     
-        return new Response($pdf->Output(utf8_decode("Facture de ".$facture->getReference()), "I"), 200, ['content-type' => 'application/pdf']);
+        return new Response($pdf->Output(utf8_decode("Facture de ".$facture->getReference()." de ".$facture->getNomClient(). " du ". date_format($facture->getDateFactureAt(), 'd-m-Y')), "I"), 200, ['content-type' => 'application/pdf']);
 
     }
 }

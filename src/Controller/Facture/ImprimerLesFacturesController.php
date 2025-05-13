@@ -6,7 +6,6 @@ use App\Entity\ConstantsClass;
 use App\Repository\EtatFactureRepository;
 use App\Repository\FactureRepository;
 use App\Repository\LigneDeFactureRepository;
-use App\Repository\PatientRepository;
 use App\Repository\UserRepository;
 use App\Service\ImpressionDesFactureService;
 use App\Service\ImpressionLesFacturesService;
@@ -27,7 +26,6 @@ class ImprimerLesFacturesController extends AbstractController
     public function __construct(
         protected UserRepository $userRepository,
         protected FactureRepository $factureRepository,
-        protected PatientRepository $patientRepository,
         protected EtatFactureRepository $etatFactureRepository,
         protected ImpressionLesFacturesService $impressionLesFacturesService,
         protected LigneDeFactureRepository $ligneDeFactureRepository, 

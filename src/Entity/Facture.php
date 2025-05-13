@@ -20,10 +20,10 @@ class Facture
     private ?string $reference = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    private ?string $nomPatient = null;
+    private ?string $nomClient = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    private ?string $contactPatient = null;
+    private ?string $contactClient = null;
 
     #[ORM\Column]
     private ?int $netAPayer = null;
@@ -49,9 +49,6 @@ class Facture
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateFactureAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'factures')]
-    private ?Patient $patient = null;
-
     #[ORM\Column(nullable: true)]
     private ?bool $annulee = null;
 
@@ -64,8 +61,17 @@ class Facture
     #[ORM\OneToMany(targetEntity: HistoriquePaiement::class, mappedBy: 'facture')]
     private Collection $historiquePaiements;
 
-    #[ORM\ManyToOne(inversedBy: 'factures')]
-    private ?Prescripteur $prescripteur = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $emailClient = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $qrCode = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adresseClient = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $remarques = null;
 
     public function __construct()
     {
@@ -90,26 +96,26 @@ class Facture
         return $this;
     }
 
-    public function getNomPatient(): ?string
+    public function getNomClient(): ?string
     {
-        return $this->nomPatient;
+        return $this->nomClient;
     }
 
-    public function setNomPatient(string $nomPatient): static
+    public function setNomClient(string $nomClient): static
     {
-        $this->nomPatient = $nomPatient;
+        $this->nomClient = $nomClient;
 
         return $this;
     }
 
-    public function getContactPatient(): ?string
+    public function getContactClient(): ?string
     {
-        return $this->contactPatient;
+        return $this->contactClient;
     }
 
-    public function setContactPatient(string $contactPatient): static
+    public function setContactClient(string $contactClient): static
     {
-        $this->contactPatient = $contactPatient;
+        $this->contactClient = $contactClient;
 
         return $this;
     }
@@ -228,18 +234,6 @@ class Facture
         return $this;
     }
 
-    public function getPatient(): ?Patient
-    {
-        return $this->patient;
-    }
-
-    public function setPatient(?Patient $patient): static
-    {
-        $this->patient = $patient;
-
-        return $this;
-    }
-
     public function isAnnulee(): ?bool
     {
         return $this->annulee;
@@ -306,16 +300,53 @@ class Facture
         return $this;
     }
 
-    public function getPrescripteur(): ?Prescripteur
+    public function getEmailClient(): ?string
     {
-        return $this->prescripteur;
+        return $this->emailClient;
     }
 
-    public function setPrescripteur(?Prescripteur $prescripteur): static
+    public function setEmailClient(?string $emailClient): static
     {
-        $this->prescripteur = $prescripteur;
+        $this->emailClient = $emailClient;
 
         return $this;
     }
+
+    public function getQrCode(): ?string
+    {
+        return $this->qrCode;
+    }
+
+    public function setQrCode(string $qrCode): static
+    {
+        $this->qrCode = $qrCode;
+
+        return $this;
+    }
+
+    public function getAdresseClient(): ?string
+    {
+        return $this->adresseClient;
+    }
+
+    public function setAdresseClient(string $adresseClient): static
+    {
+        $this->adresseClient = $adresseClient;
+
+        return $this;
+    }
+
+    public function getRemarques(): ?string
+    {
+        return $this->remarques;
+    }
+
+    public function setRemarques(?string $remarques): static
+    {
+        $this->remarques = $remarques;
+
+        return $this;
+    }
+
 
 }

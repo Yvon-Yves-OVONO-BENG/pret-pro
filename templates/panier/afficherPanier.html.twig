@@ -177,56 +177,86 @@
                             <div class="expanel-body">
                                 {{ form_start(confirmerFactureForm, {'attr': {'class':'row g-4 needs-validation', 'novalidate':''}})}}
                                     
-                                    <div class="col-md-3 position-relative">
-                                        <label for="validationCustom04" class="form-label">{% trans %}Nom du patient pris en charge{% endtrans %}</label>
-                                        {{ form_widget(confirmerFactureForm.patient ) }}
-
-                                        <div class="invalid-feedback">
-                                            {% trans %}Veuillez sélectionner le nom du patien pris en charge{% endtrans %}
-                                        </div>
+                                    <div class="col-md-3">
                                     </div>
-                                    <div class="col-md-3 position-relative">
-                                        <label for="validationCustom04" class="form-label">{% trans %}Nom du patient{% endtrans %}</label>
-                                        {{ form_widget(confirmerFactureForm.nomPatient) }}
+                                    <div class="col-md-3">
+                                        <label for="validationCustom04" class="form-label">{% trans %}Nom du client{% endtrans %}</label>
+                                        {{ form_widget(confirmerFactureForm.nomClient) }}
 
                                         <div class="invalid-feedback">
-                                            {% trans %}Veuillez saisir le nom du patient{% endtrans %}
+                                            {% trans %}Veuillez saisir le nom du client{% endtrans %}
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="validationCustom04" class="form-label">{% trans %}Contact du client{% endtrans %}</label>
-                                        {{ form_widget(confirmerFactureForm.contactPatient, {'attr': {'id':'validationCustom04'}})}}
+                                        {{ form_widget(confirmerFactureForm.contactClient, {'attr': {'id':'validationCustom04'}})}}
                                         <div class="invalid-feedback">
                                             {% trans %}Veuillez saisir le contact du client{% endtrans %}
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-3">
+                                        {# <label for="validationCustom04" class="form-label">{% trans %}Email{% endtrans %}</label> #}
+                                        {{ form_widget(confirmerFactureForm.adresseClient, {'attr': {'id':'validationCustom04'}})}}
+                                        <div class="invalid-feedback">
+                                            {% trans %}Veuillez saisir l'adresse{% endtrans %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {# <label for="validationCustom04" class="form-label">{% trans %}Email{% endtrans %}</label> #}
+                                        {{ form_widget(confirmerFactureForm.emailClient, {'attr': {'id':'validationCustom04'}})}}
+                                        <div class="invalid-feedback">
+                                            {% trans %}Veuillez saisir l'email{% endtrans %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-3">
                                         <label for="validationCustom04" class="form-label">{% trans %}Mode de paiement{% endtrans %}</label>
                                         {{ form_widget(confirmerFactureForm.modePaiement, {'attr': {'id':'validationCustom04'}} )}}
                                         <div class="invalid-feedback">
                                             {% trans %}Veuillez choisir le mode de paiement{% endtrans %}
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <label for="validationCustom04" class="form-label">{% trans %}Avance de la facture{% endtrans %}</label>
-                                        {{ form_row(confirmerFactureForm.avance, {'attr': {'id':'validationCustom04'}})}}
+                                        {{ form_widget(confirmerFactureForm.avance, {'attr': {'id':'validationCustom04'}})}}
                                         <div class="invalid-feedback">
                                             {% trans %}Veuillez saisir l'avance{% endtrans %}
                                         </div>
                                     </div>
-                                    
-                                    <div class="col-lg-3">
-                                        <label for="validationCustom04" class="form-label">{% trans %}Precripteur{% endtrans %}</label>
-                                        {{ form_widget(confirmerFactureForm.prescripteur, {'attr': {'id':'validationCustom04'}} )}}
+                                    <div class="col-md-3">
+                                    </div>
+                                    {##}
+
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-6">
+                                        {# <label for="validationCustom04" class="form-label">{% trans %}Remarques{% endtrans %}</label> #}
+                                        {{ form_widget(confirmerFactureForm.remarques, {'attr': {'id':'validationCustom04'}})}}
                                         <div class="invalid-feedback">
-                                            {% trans %}Veuillez choisir le prescripteur{% endtrans %}
+                                            {% trans %}Veuillez saisir la remarque{% endtrans %}
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-6">
-                                        <label for="validationCustom04" class="form-label text-white">{% trans %}Mode de paiement{% endtrans %}</label>
-                                        <button id="boutonEnvoie" class="btn btn-outline-danger btn-md btn-block" disabled type="submit"><i class="fa fa-money"></i> {% trans %}Payer{% endtrans %}</button>
+                                    <div class="col-md-3">
                                     </div>
+                                    
+                                    <div class="col-md-4">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationCustom04" class="form-label text-white">{% trans %}payer{% endtrans %}</label>
+                                        <button id="boutonEnvoie" class="btn btn-outline-danger btn-md btn-block" type="submit"><i class="fa fa-money"></i> {% trans %}Payer{% endtrans %}</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                    </div>
+                                    
                                     
 
                                 </div>
@@ -251,6 +281,6 @@
 
 
 <script src="{{ asset ('js/verificationQuantiteNegativePanier.js')}}"></script>
-<script src="{{ asset ('js/confirmerFacture1.js')}}"></script>
+{# <script src="{{ asset ('js/confirmerFacture1.js')}}"></script> #}
 {% endblock %}
 

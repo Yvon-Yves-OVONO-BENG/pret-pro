@@ -8,7 +8,7 @@
                 <i class="fa fa-star"></i> {% trans %}Référence{% endtrans %}
             </th>
             <th class="wd-15p border-bottom-0">
-                <i class="fa fa-user"></i> {% trans %}Patient{% endtrans %}
+                <i class="fa fa-user"></i> {% trans %}Client{% endtrans %}
             </th>
             <th class="wd-15p border-bottom-0">
                 <i class="fa fa-calendar"></i> Date
@@ -38,7 +38,7 @@
                 <i class="fa fa-star"></i> {% trans %}Référence{% endtrans %}
             </th>
             <th class="wd-15p border-bottom-0">
-                <i class="fa fa-user"></i> {% trans %}Patient{% endtrans %}
+                <i class="fa fa-user"></i> {% trans %}Client{% endtrans %}
             </th>
             <th class="wd-15p border-bottom-0">
                 <i class="fa fa-calendar"></i> Date
@@ -76,8 +76,7 @@
                 </td>
 
                 <td class="infoTable">
-                    
-                    {{ facture.nomPatient ? facture.nomPatient : (facture.patient ? facture.patient.nom: "NOM PAS SAISI") }}
+                    {{ facture.nomClient ? facture.nomClient : "NOM PAS SAISI" }}
                 </td>
 
                 <td class="infoTable">{{ facture.dateFactureAt | date('d-m-Y') }} <br> {% trans %}à{% endtrans %} {{ facture.heure | date('H:i:s') }}</td>
@@ -114,6 +113,7 @@
                                 <a class="dropdown-item" href="{{ path('details_facture', {'slug': facture.slug }) }}"><i class="fe fe-eye me-2"></i> Détails</a>
                                 <a class="dropdown-item" href="{{ path('imprimer_facture', {'slug': facture.slug }) }}" target="_blank"><i class="fe fe-printer me-2"></i> Imprimer la facture</a>
                                 <a class="dropdown-item" href="{{ path('imprimer_historique_paiement', {'slug': facture.slug }) }}" target="_blank"><i class="fe fe-printer me-2"></i> Imprimer l'historique de paiement</a>
+                                <a class="dropdown-item" href="{{ path('envoi_facture', {'slug': facture.slug }) }}" ><i class="fe fe-send me-2"></i> Envoyer la facture</a>
                                 {% if is_granted('ROLE_CAISSIERE') %}
                                     {% if facture.etatFacture.etatFacture == 'NON SOLDE' and facture.annulee == 0 %}
                                         <a class="dropdown-item" href="{{ path('ajout_avance', {'slug': facture.slug }) }}"><i class="fe fe-plus me-2"></i> Ajouter une avance</a>

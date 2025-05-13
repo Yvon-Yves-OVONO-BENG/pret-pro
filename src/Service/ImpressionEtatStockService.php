@@ -30,19 +30,44 @@ class ImpressionEtatStockService extends FPDF
         $pdf = new Pagination();
         $pdf->addPage('P');
 
-        $pdf = $this->entetePortrait->entetePortrait($pdf);
+        $pdf->Image('../public/assets/images/brand/logo.png', 30, 12, 25);
+		$pdf->Image('../public/assets/images/brand/arrierePlan.png', 95, 190, 150);
+		$pdf->SetFont('Helvetica', 'B', 11);
+		// fond de couleur gris (valeurs en RGB)
+		$pdf->setFillColor(229, 255, 255);
+		// position du coin supérieur gauche par rapport à la marge gauche (mm)
+
+
+		$pdf->SetX(15);
+		$pdf->Cell(70, 4, utf8_decode(""), 0, 0, 'C', 0);
+		$pdf->Cell(40, 4, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 4, utf8_decode(''), 0, 1, 'C', 0);
+
+		$pdf->SetX(15);
+		$pdf->SetFont('Helvetica', 'B', 20);
+		$pdf->Cell(70, 2, '', 0, 0, 'C', 0);
+		$pdf->Cell(40, 2, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 15, utf8_decode('PRET-PRO'), 0, 1, 'C', 1);
+        
+		$pdf->SetFont('Helvetica', 'B', 8);
+		$pdf->SetX(15);
+		$pdf->Cell(70, 4, utf8_decode(""), 0, 0, 'C', 0);
+		$pdf->Cell(40, 4, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 4, utf8_decode("Vous habiller, c'est notre devoir"), 0, 1, 'C', 0);
+
+		$pdf->SetX(15);
+		$pdf->SetFont('Helvetica', 'B', 8);
+		$pdf->Cell(70, 2, '', 0, 0, 'C', 0);
+		$pdf->Cell(40, 2, '', 0, 0, 'L', 0);
+		$pdf->Cell(70, 2, '', 0, 1, 'C', 0);
 
         $pdf->SetLeftMargin(10);
 
         $positionY = 50;
         $pdf->SetXY(15, $positionY);
 
-        // $pdf->Image('../public/images/qrcode/'.$facture->getQrCode(), 10, 40, 500);
-        // $pdf->Image('../public/images/qrcode/'.$facture->getQrCode(), 165, 67, 34, 34);
-        
-        $pdf->Ln(8);
         $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(0, 5, 'ETAT DU STOCK DES MEDICAMENTS', 0, 1, 'C', 0);
+        $pdf->Cell(0, 5, 'ETAT DU STOCK DES PRODUITS', 0, 1, 'C', 0);
         $pdf->SetFont('Arial', 'BI', 7);
         $pdf->Cell(0, 5, 'Date : '. date_format(new DateTime(), 'd-m-Y H:i:s'), 0, 1, 'C', 0);
         $pdf->Cell(0, 5, 'Les prix sont en fcfa', 0, 1, 'C', 0);
@@ -79,18 +104,8 @@ class ImpressionEtatStockService extends FPDF
             
             $pdf->SetX(10);
             $pdf->Cell(10, 5, utf8_decode($i), 1, 0, 'C', true);
-            $pdf->Cell(90, 5, utf8_decode($produit->getLibelle()), 1, 0, 'L', true);
+            $pdf->Cell(115, 5, utf8_decode($produit->getLibelle()), 1, 0, 'L', true);
 
-            if ($produit->getLot()->getDatePeremptionAt()) 
-            {
-                $pdf->Cell(25, 5, utf8_decode(date_format($produit->getLot()->getDatePeremptionAt(), 'd-m-Y')), 1, 0, 'C', true);
-            } 
-            else 
-            {
-                $pdf->Cell(25, 5, utf8_decode("").' / '.utf8_decode(""), 1, 0, 'C', true);
-            }
-            
-            
             $pdf->Cell(20, 5, utf8_decode(number_format($produit->getLot()->getQuantite(), 0, '', ' ')), 1, 0, 'C', true);
             $pdf->Cell(20, 5, utf8_decode(number_format($produit->getLot()->getVendu(), 0, '', ' ')), 1, 0, 'C', true);
             $pdf->Cell(20, 5, utf8_decode(number_format(($produit->getLot()->getQuantite() - $produit->getLot()->getVendu()), 0, '', ' ')), 1, 1, 'C', true);
@@ -118,8 +133,7 @@ class ImpressionEtatStockService extends FPDF
         $pdf->SetFillColor(240,240,240);
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(10, 5, utf8_decode('N°'), 1, 0, 'C', true);
-        $pdf->Cell(90, 5, utf8_decode('Désignation'), 1, 0, 'C', true);
-        $pdf->Cell(25, 5, utf8_decode('Date Exp.'), 1, 0, 'C', true);
+        $pdf->Cell(115, 5, utf8_decode('Désignation'), 1, 0, 'C', true);
         $pdf->Cell(20, 5, utf8_decode('Quantité'), 1, 0, 'C', true);
         $pdf->Cell(20, 5, utf8_decode('Vendu'), 1, 0, 'C', true);
         $pdf->Cell(20, 5, utf8_decode('Reste'), 1, 1, 'C', true);

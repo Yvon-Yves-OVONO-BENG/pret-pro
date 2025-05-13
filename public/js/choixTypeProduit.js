@@ -1,10 +1,10 @@
 	///je déclare mes constantes pour gérer l'évènement choix type produit
 	const choixTypeProduit = document.querySelector('#choixTypeProduit');
 	const produit = document.querySelector('#produit');
-	const kit = document.querySelector('#kit');
+	const ensemble = document.querySelector('#ensemble');
 
 	const produitForm = document.querySelector('#produitForm');
-	const kitForm = document.querySelector('#kitForm');
+	const ensembleForm = document.querySelector('#ensembleForm');
 
 	console.log(choixTypeProduit);
 	
@@ -13,7 +13,7 @@
 	window.onload = () => 
 	{
 		/////evenement choixTypeProduit
-		choixTypeProduitEvent(produit, produitForm, kitForm);
+		choixTypeProduitEvent(produit, produitForm, ensembleForm);
 
 	};
 
@@ -23,34 +23,34 @@
 	{
 		/////j'affiche la div type handicap
 		produitForm.style.display = "";
-		kitForm.style.display = "none";
+		ensembleForm.style.display = "none";
 	}
 	///sinon
 	else
 	{
 		produitForm.style.display = "none";
-		kitForm.style.display = "";
+		ensembleForm.style.display = "";
 	}
 
 
 	// Si il/elle est handicapé(e)
 	choixTypeProduit.addEventListener('change', function()
 	{
-		choixTypeProduitEvent(produit, produitForm, kitForm);
+		choixTypeProduitEvent(produit, produitForm, ensembleForm);
 	});
 
 	
 	//////////////////TYPE PRODUIT EVENEMENT
-	const choixTypeProduitEvent = (produit, produitForm, kitForm) => 
+	const choixTypeProduitEvent = (produit, produitForm, ensembleForm) => 
 	{
 		if(produit.checked == true)
 		{
 			produitForm.style.display = "";
-			kitForm.style.display = "none";
+			ensembleForm.style.display = "none";
 			
 		}else{
 			
 			produitForm.style.display = "none";
-			kitForm.style.display = "";
+			ensembleForm.style.display = "";
 		}
 	};

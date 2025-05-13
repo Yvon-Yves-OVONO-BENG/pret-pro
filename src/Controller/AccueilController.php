@@ -129,7 +129,7 @@ class AccueilController extends AbstractController
             
             #je recupère tous les produits
             $tousLesProduits = $this->produitRepository->findBy([
-                'kit' => 0,
+                'ensemble' => 0,
                 'supprime' => 0,
             ]);
 
@@ -143,16 +143,6 @@ class AccueilController extends AbstractController
             {
                 $aujourdhui = date_format(new DateTime('now'), 'Y-m-d');
                 $aujourdhui = new DateTime($aujourdhui);
-
-                $datePeremption = date_format($produit->getLot()->getDatePeremptionAt(), ('Y-m-d'));
-                $datePeremption = new DateTime($datePeremption);
-
-                $dateDiff = $aujourdhui->diff($datePeremption);
-                
-                if ((int)$dateDiff->format('%R%a') <= 90 && ((int)$dateDiff->format('%R%a') > 0) && ($produit->isSupprime() == 0)) 
-                {
-                    $produitsBientotPerimes[] = $produit;
-                }
             
             }
 
@@ -165,16 +155,6 @@ class AccueilController extends AbstractController
                 $aujourdhui = date_format(new DateTime('now'), 'Y-m-d');
                 $aujourdhui = new DateTime($aujourdhui);
 
-                $datePeremption = date_format($produit->getLot()->getDatePeremptionAt(), ('Y-m-d'));
-                $datePeremption = new DateTime($datePeremption);
-
-                $dateDiff = $aujourdhui->diff($datePeremption);
-                
-                if ((int)$dateDiff->format('%R%a') <= 0 && $produit->isSupprime() == 0) 
-                {
-                    $produitsPerimes[] = $produit;
-                }
-            
             }
 
             #les commandes
@@ -186,28 +166,49 @@ class AccueilController extends AbstractController
             $nombreCash = 0;
             $montantCash = 0;
 
-            $nombrePrisEnCharge = 0;
-            $montantPrisEnCharge = 0;
+            $nombreCheque = 0;
+            $montantCheque = 0;
 
-            $nombreCredit = 0;
-            $montantCredit = 0;
+            $nombreMomo = 0;
+            $montantMomo = 0;
+
+            $nombreOm = 0;
+            $montantOm = 0;
+
+            $nombreVirement = 0;
+            $montantVirement = 0;
+
             foreach ($factures as $facture) 
             {
-                switch ($facture->getModePaiement()->getModePaiement()) {
-                    case 'CASH':
+                switch ($facture->getModePaiement()->getModePaiement()) 
+                {
+                    case ConstantsClass::CASH:
                         $nombreCash = $nombreCash + 1;
                         $montantCash += $facture->getAvance();
                         break;
 
-                    case 'PRIS EN CHARGE':
-                        $nombrePrisEnCharge = $nombrePrisEnCharge + 1;
-                        $montantPrisEnCharge += $facture->getAvance();
+                    case ConstantsClass::CHEQUE:
+                        $nombreCheque = $nombreCheque + 1;
+                        $montantCheque += $facture->getAvance();
                         break;
 
-                    case 'CRÉDIT':
-                        $nombreCredit = $nombreCredit + 1;
-                        $montantCredit += $facture->getAvance();
+                    case ConstantsClass::MOBILE_MONEY:
+                        $nombreMomo = $nombreMomo + 1;
+                        $montantMomo += $facture->getAvance();
                         break;
+
+                    case ConstantsClass::ORANGE_MONEY:
+                        $nombreOm = $nombreOm + 1;
+                        $montantOm += $facture->getAvance();
+                        break;
+
+
+                    case ConstantsClass::VIREMENT:
+                        $nombreVirement = $nombreVirement + 1;
+                        $montantVirement += $facture->getAvance();
+                        break;
+                        
+                        
                     
                 }
             }
@@ -217,11 +218,17 @@ class AccueilController extends AbstractController
             $nombreCashDuJour = 0;
             $montantCashDuJour = 0;
 
-            $nombrePrisEnChargeDuJour = 0;
-            $montantPrisEnChargeDuJour = 0;
+            $nombreChequeDuJour = 0;
+            $montantChequeDuJour = 0;
 
-            $nombreCreditDuJour = 0;
-            $montantCreditDuJour = 0;
+            $nombreMomoDuJour = 0;
+            $montantMomoDuJour = 0;
+
+            $nombreOmDuJour = 0;
+            $montantOmDuJour = 0;
+
+            $nombreVirementDuJour = 0;
+            $montantVirementDuJour = 0;
 
             foreach ($facturesDuJour as $factureDuJour) 
             {
@@ -231,15 +238,27 @@ class AccueilController extends AbstractController
                         $montantCashDuJour += $factureDuJour->getAvance();
                         break;
 
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        $nombrePrisEnChargeDuJour = $nombrePrisEnChargeDuJour + 1;
-                        $montantPrisEnChargeDuJour += $factureDuJour->getAvance();
+                    case ConstantsClass::CHEQUE:
+                        $nombreChequeDuJour = $nombreChequeDuJour + 1;
+                        $montantChequeDuJour += $factureDuJour->getAvance();
                         break;
 
-                    case ConstantsClass::CREDIT:
-                        $nombreCreditDuJour = $nombreCreditDuJour + 1;
-                        $montantCreditDuJour += $factureDuJour->getAvance();
+                    case ConstantsClass::MOBILE_MONEY:
+                        $nombreMomoDuJour = $nombreMomoDuJour + 1;
+                        $montantMomoDuJour += $factureDuJour->getAvance();
                         break;
+
+                    case ConstantsClass::ORANGE_MONEY:
+                        $nombreOmDuJour = $nombreOmDuJour + 1;
+                        $montantOmDuJour += $factureDuJour->getAvance();
+                        break;
+
+                    case ConstantsClass::VIREMENT:
+                        $nombreVirementDuJour = $nombreVirementDuJour + 1;
+                        $montantVirementDuJour += $factureDuJour->getAvance();
+                        break;
+
+                    
                     
                 }
             }
@@ -276,17 +295,25 @@ class AccueilController extends AbstractController
 
                 'nombreCash' => $nombreCash,
                 'montantCash' => $montantCash,
-                'nombrePrisEnCharge' => $nombrePrisEnCharge,
-                'montantPrisEnCharge' => $montantPrisEnCharge,
-                'nombreCredit' => $nombreCredit,
-                'montantCredit' => $montantCredit,
+                'nombreCheque' => $nombreCheque,
+                'montantCheque' => $montantCheque,
+                'nombreMomo' => $nombreMomo,
+                'montantMomo' => $montantMomo,
+                'nombreOm' => $nombreOm,
+                'montantOm' => $montantOm,
+                'nombreVirement' => $nombreVirement,
+                'montantVirement' => $montantVirement,
 
                 'nombreCashDuJour' => $nombreCashDuJour,
                 'montantCashDuJour' => $montantCashDuJour,
-                'nombrePrisEnChargeDuJour' => $nombrePrisEnChargeDuJour,
-                'montantPrisEnChargeDuJour' => $montantPrisEnChargeDuJour,
-                'nombreCreditDuJour' => $nombreCreditDuJour,
-                'montantCreditDuJour' => $montantCreditDuJour,
+                'nombreChequeDuJour' => $nombreChequeDuJour,
+                'montantChequeDuJour' => $montantChequeDuJour,
+                'nombreMomoDuJour' => $nombreMomoDuJour,
+                'montantMomoDuJour' => $montantMomoDuJour,
+                'nombreOmDuJour' => $nombreOmDuJour,
+                'montantOmDuJour' => $montantOmDuJour,
+                'nombreVirementDuJour' => $nombreOmDuJour,
+                'montantVirementDuJour' => $montantOmDuJour,
 
                 'aujourdhui' => $aujourdhui,
                 'factures' => compact("factures"),

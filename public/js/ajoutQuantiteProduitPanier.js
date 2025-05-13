@@ -8,7 +8,7 @@
 			var quantite = this.value;
 
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/pharmacie/public/ajout-quantite-produit-panier', true);
+			xhr.open('POST', '/pretpro/public/ajout-quantite-produit-panier', true);
 			xhr.setRequestHeader('Content-type', 'application/json');
 			xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 			xhr.onreadystatechange = function() {

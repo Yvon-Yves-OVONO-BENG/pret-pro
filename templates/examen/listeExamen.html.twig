@@ -40,7 +40,7 @@
 			</div>
 			<div class="page-rightheader">
 				<div class="btn-list">
-					{% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR')%}
+					{% if is_granted('ROLE_ADMINISTRATEUR')%}
 						<a href="{{ path ('ajouter_examen') }}" class="btn btn-outline-primary"><i class="fe fe-plus me-2"></i>
 							{% trans %}Ajouter un examen{% endtrans %}
 						</a>
@@ -108,7 +108,7 @@
 											</td>
 											
 											<td>
-												{% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_SECRETAIRE') %}
+												{% if is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_SECRETAIRE') %}
 													<div class="btn-group">
 														<a href="javascript:void(0);" class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans %}Opérations{% endtrans %} <i class="fa fa-angle-down"></i></a>
 														<div class="dropdown-menu border-primary">

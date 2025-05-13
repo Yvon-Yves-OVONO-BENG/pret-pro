@@ -3,6 +3,9 @@
 namespace App\Repository;
 
 use DateTime;
+use App\Entity\User;
+use App\Entity\Facture;
+use App\Entity\EtatFacture;
 use App\Entity\HistoriquePaiement;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -31,6 +34,33 @@ class HistoriquePaiementRepository extends ServiceEntityRepository
             
         return $qb->getQuery()->getResult();
     }
+
+    public function historiquePaiementPeriode(User $caissiere = null, EtatFacture $etatFacture = null, DateTime $dateDebut = null, DateTime $dateFin = null): array
+    {
+        $qb = $this->createQueryBuilder('h')
+            ;
+            if($caissiere)
+            {
+                $qb->innerjoin(Facture::class, 'f')
+                ->andWhere('f.caissiere = :caissiere')
+                ->setParameter('caissiere', $caissiere);
+            }
+            if($dateDebut && $dateFin)
+            {
+                $qb->andWhere('h.dateAvanceAt BETWEEN :dateDebut AND :dateFin')
+                ->setParameter('dateDebut', $dateDebut)
+                ->setParameter('dateFin', $dateFin);
+            }
+
+            if($etatFacture)
+            {
+                $qb->andWhere('f.etatFacture = :etatFacture')
+                ->setParameter('etatFacture', $etatFacture);
+            }
+
+        return $qb->getQuery()->getResult();
+    }
+
 
     //    /**
     //     * @return HistoriquePaiement[] Returns an array of HistoriquePaiement objects

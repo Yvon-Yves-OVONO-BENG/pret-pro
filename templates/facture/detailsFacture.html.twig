@@ -66,14 +66,14 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<h5 class="mb-1">Salut
-										<strong>{{ facture.nomPatient ? facture.nomPatient : facture.patient.nom }}</strong>,</h5>
+										<strong>{{ facture.nomClient ? facture.nomClient : facture.client.nom }}</strong>,</h5>
 									Cette facture s'élève à un montant de :
 									<strong>{{ facture.netApayer }}</strong>
 									FCFA
 								</div>
 								<div class="col-sm-6 text-end">
 									<span>Date de la facture</span><br>
-									<strong>{{ facture.dateFactureAt | date('d-m-Y H:i') }}</strong>
+									<strong>{{ facture.dateFactureAt | date('d-m-Y') }} - {{ facture.heure | date('H:i') }}</strong>
 								
 								</div>
 							</div>
@@ -82,63 +82,77 @@
 							<div class="card-body ps-0 pe-0">
 								<div class="row">
 									<div class="col-sm-6">
-										<span>Etat de la facture :
-										</span><br>
-										<strong>{{ facture.etatFacture ? facture.etatFacture.etatFacture : "" }}</strong>
+										<span>Etat de la facture :</span>
+										<strong>{{ facture.etatFacture ? facture.etatFacture.etatFacture : "" }}</strong>;
+										<span>Mode de paiement :</span>
+										<strong>{{ facture.modePaiement ? facture.modePaiement.modePaiement : "" }}</strong><br>
+										<strong>Remarques : {{ facture.remarques ? facture.remarques : "RAS" }}</strong>
 									</div>
 									<div class="col-sm-6 text-end">
-										<span>Par :</span><br>
-										<strong>{{ facture.caissiere ? facture.caissiere.nom : "Caissière" }}</strong>
+										<span>Par :</span>
+										<strong>{{ facture.caissiere ? facture.caissiere.nom : "Caissière" }}</strong> 
 									</div>
 								</div>
 							</div>
 							<div class="dropdown-divider"></div>
 							<div class="row pt-4">
-								<div class="col-lg-6 ">
-									<p class="h5 font-weight-bold">Facture de : Hôpital de District d'Abong Mbang
+								<div class="col-lg-4 ">
+									<p class="h5 font-weight-bold">Facture de : Prêt-Pro
 									</p>
 									<address>
 										Cameroun<br>
-										Est, Haut Nyong<br>
-										Yaoundé, BP : 19 - ABG MBG<br>
-										+237 670 152 046 <br>
-										<p class="h5 font-weight-bold">
-											Prescrit par : {{ facture.prescripteur.prescripteur }}
-										</p>
+										Centre, Mfoundi<br>
+										Yaoundé, BP : 14525 - Yaoundé<br>
+										+237 697 993 386 <br>
+										
 									</address>
 								</div>
-								<div class="col-lg-6 text-end">
+
+								<div class="col-lg-4 text-center">
+									<img src="{{ asset ('images/qrCode/' ~ facture.qrCode )}}" alt="qrCode" width="100" heigth="100">
+								</div>
+
+								<div class="col-lg-4 text-end">
 									<p class="h5 font-weight-bold">Pour :
 									</p>
 									<address>
 										Nom client :
-										{{ facture.nomPatient ? facture.nomPatient : facture.patient.nom  }}<br>
+										{{ facture.nomClient ? facture.nomClient : facture.client.nom  }}<br>
 										Téléphone :
-										{{ facture.contactPatient }}<br>
-										Mode de paiement :
-										{{ facture.modePaiement ? facture.modePaiement.modePaiement : "" }}
+										{{ facture.contactClient }}<br>
+										Email :
+										{{ facture.emailClient }}<br>
+										
 									</address>
 								</div>
 							</div>
 							<div class="table-responsive push">
 								<table class="table table-bordered table-striped table-hover text-nowrap">
 									<tr class=" ">
-										<th class="text-center " style="width: 1%"></th>
+										<th class="text-center " style="width: 1%">N°</th>
+										<th class="text-center " style="width: 1%">Photo</th>
 										<th>Produits</th>
 										<th class="text-end" style="width: 1%">PU(FCFA)</th>
 										<th class="text-center" style="width: 1%">Qté</th>
 										<th class="text-end" style="width: 1%">Total (FCFA)</th>
 									</tr>
 									{% set i = 1 %}
+									
 									{% for ligneDeFacture in ligneDeFactures %}
 										<tr>
 											<td class="text-center" style="vertical-align: middle !important;">{{ i }}</td>
+											<td class="text-center" style="vertical-align: middle !important;">
+												<img src="{{ asset ('images/photoProduits/' ~ ligneDeFacture.produit.photo )}}" alt="photo">
+											</td>
 											<td>
 												<p class="font-weight-semibold mb-1">{{ ligneDeFacture.produit.libelle ? ligneDeFacture.produit.libelle : ligneDeFacture.produit.libelle}}</p>
-												{% if ligneDeFacture.produit.kit == 1 %}
+												
+												{% if ligneDeFacture.produit.ensemble == 1 %}
+												
 													<table  class="table table-bordered table-hover text-nowrap">
 														<tr class=" ">
 															<th class="text-center " style="width: 1%; vertical-align: middle !important;">N°</th>
+															<th class="text-center " style="width: 1%">Photo</th>
 															<th>Produits</th>
 															<th class="text-end" style="width: 1%">PU (FCFA)</th>
 															<th class="text-center" style="width: 1%">Qté</th>
@@ -146,19 +160,23 @@
 														</tr>
 														{% set p = 1 %}
 														{% set sousTotal = 0 %}
-														{% for produitKit in ligneDeFacture.produit.produitLigneDeKits %}
+														{% for produitEnsemble in ligneDeFacture.produit.produitLigneDeEnsembles %}
+														{# #}
 															<tr class=" ">
 																<td class="text-center " style="width: 1%">{{ p }}</td>
-																<td>{{ produitKit.produit.libelle }}</td>
-																<td class="text-end" style="width: 1%">{{ produitKit.prix }}</td>
-																<td class="text-center" style="width: 1%">{{ produitKit.quantite }}</td>
-																<td class="text-center" style="width: 1%">{{ produitKit.total }}</td>
+																<td class="text-center" style="vertical-align: middle !important;">
+																	<img src="{{ asset ('images/photoProduits/' ~ produitEnsemble.produit.photo )}}" alt="photo">
+																</td>
+																<td>{{ produitEnsemble.produit.libelle }}</td>
+																<td class="text-end" style="width: 1%">{{ produitEnsemble.prix }}</td>
+																<td class="text-center" style="width: 1%">{{ produitEnsemble.quantite }}</td>
+																<td class="text-center" style="width: 1%">{{ produitEnsemble.total }}</td>
 															</tr>
 														{% set p = p + 1 %}
-														{% set sousTotal = sousTotal + produitKit.total %}
+														{% set sousTotal = sousTotal + produitEnsemble.total %}
 														{% endfor %}
 															<tr class=" ">
-																<td class="font-weight-bold text-uppercase text-end h5 mb-0" style="width: 1%" colspan="4">Sous total du kit</td>
+																<td class="font-weight-bold text-uppercase text-end h5 mb-0" style="width: 1%" colspan="5">Sous total du ensemble</td>
 																<td class="font-weight-bold text-uppercase text-end h5 mb-0" style="width: 1%">{{ sousTotal }} FCFA</td>
 															</tr>
 													</table>
@@ -173,31 +191,31 @@
 									{% endfor %}
 
 									<tr>
-										<td colspan="4" class="font-weight-semibold text-end">Montant HT</td>
+										<td colspan="5" class="font-weight-semibold text-end">Montant HT</td>
 										<td class="text-end"><h5><span class="badge bg-primary">{{ facture.netApayer }}</span></h5></td>
 									</tr>
 									<tr>
-										<td colspan="4" class="font-weight-semibold text-end">TVA</td>
+										<td colspan="5" class="font-weight-semibold text-end">TVA</td>
 										<td class="text-end">0%</td>
 									</tr>
 									<tr>
-										<td colspan="4" class="font-weight-semibold text-end">Montant à payer</td>
+										<td colspan="5" class="font-weight-semibold text-end">Montant à payer</td>
 										<td class="text-end"><h5><span class="badge bg-primary">{{ facture.netApayer }}</span></h5></td>
 									</tr>
 									<tr class="text-danger">
-										<td colspan="4" class="font-weight-bold text-uppercase text-end h4 mb-0">NET A PAYER</td>
+										<td colspan="5" class="font-weight-bold text-uppercase text-end h4 mb-0">NET A PAYER</td>
 										<td class="font-weight-bold text-end h4 mb-0">{{ facture.netApayer }} FCFA</td>
 									</tr>
 									<tr class="text-danger">
-										<td colspan="4" class="font-weight-bold text-uppercase text-end h4 mb-0">{% trans %}AVANCE{% endtrans %}</td>
+										<td colspan="5" class="font-weight-bold text-uppercase text-end h4 mb-0">{% trans %}AVANCE{% endtrans %}</td>
 										<td class="font-weight-bold text-end h4 mb-0">{{ facture.avance }} FCFA</td>
 									</tr>
 									<tr class="text-danger">
-										<td colspan="4" class="font-weight-bold text-uppercase text-end h4 mb-0">{% trans %}RESTE{% endtrans %}</td>
+										<td colspan="5" class="font-weight-bold text-uppercase text-end h4 mb-0">{% trans %}RESTE{% endtrans %}</td>
 										<td class="font-weight-bold text-end h4 mb-0">{{ facture.netApayer - facture.avance}} FCFA</td>
 									</tr>
 									<tr>
-										<td colspan="5" class="text-end">
+										<td colspan="6" class="text-end">
 											{% if is_granted('ROLE_CAISSIERE') or is_granted('ROLE_ADMINISTRATEUR') %}
 												<a href="{{ path('liste_facture') }}" class="btn btn-outline-primary">
 													<i class="fa fa-cart-arrow-down me-2"></i>
@@ -205,6 +223,10 @@
 													{% trans %}Nos factures{% endtrans %}
 												</a>
 											{% endif %}
+											<a href="{{ path('envoi_facture', {'slug': facture.slug }) }}" class="btn btn-outline-primary">
+												<i class="fa fa-send me-2"></i>
+												{% trans %}Envoyer{% endtrans %}
+											</a>
 											<a href="{{ path('imprimer_facture', {'slug': facture.slug }) }}" class="btn btn-outline-primary" target="_blank">
 												<i class="si si-printer me-2"></i>
 												{% trans %}Imprimer{% endtrans %}
@@ -214,7 +236,7 @@
 									</tr>
 								</table>
 							</div>
-							<p class="text-muted text-center">Merci beacoup d'avoit fait confiance à Pharmacy. BONNE GUERISON !</p>
+							<p class="text-muted text-center">Merci beacoup d'avoit fait confiance à Prêt-Pro. !</p>
 						</div>
 					</div>
 				</div>

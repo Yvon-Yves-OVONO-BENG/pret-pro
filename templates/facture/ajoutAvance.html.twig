@@ -11,7 +11,7 @@
             <div class="page-header">
                 <div class="page-leftheader">
                     <h4 class="page-title mb-0 text-primary"><i class="si si-plus me-2"></i> {% trans %}Ajout avance à la facture : {% endtrans %} {{ facture.reference }} {% trans %} de 
-                        {% endtrans %} {{ facture.patient ? facture.patient.nom : facture.nomPatient }}
+                        {% endtrans %} {{ facture.nomClient }}
                     </h4>
                 </div>
                 <div class="page-rightheader">
@@ -48,8 +48,14 @@
                         <div class="card-body">
                             <div class="pro-user">
                                 {{ form_start(ajoutAvanceForm, {'attr': {'class':'row g-4 needs-validation', 'novalidate':''}})}}
-                                    
-                                <div class="col-md-8">
+                                    <div class="col-md-4">
+                                        {# <label for="validationCustom04" class="form-label">{% trans %}Mode de paiement{% endtrans %}</label> #}
+                                        {{ form_row(ajoutAvanceForm.modePaiement, {'attr': {'id':'validationCustom04'}})}}
+                                        <div class="invalid-tooltip">
+                                            {% trans %}Veuillez sélectionner le mode de paiement{% endtrans %}
+                                        </div>
+                                    </div>
+                                <div class="col-md-4">
                                     {# <input type="number" name="avance" min="5" max="{{ facture.netApayer - facture.avance }}" class="form-control" id="validationCustom03" required>
                                     <div class="invalid-feedback">
                                         {% trans %}Veuillez saisir le montant à verser{% endtrans %}
@@ -57,11 +63,15 @@
 
                                     <input type="hidden" name="slugFacture" value="{{ facture.slug }}">
 
+                                    
+
                                     <label for="validationCustom04" class="form-label">{% trans %}Avance de la facture{% endtrans %}</label>
                                     {{ form_row(ajoutAvanceForm.avance, {'attr': {'id':'validationCustom04'}})}}
                                     <div class="invalid-tooltip">
                                         {% trans %}Veuillez saisir l'avance{% endtrans %}
                                     </div>
+
+
                                 </div>
                                 
                                 

@@ -26,6 +26,9 @@ class HistoriquePaiement
     #[ORM\ManyToOne(inversedBy: 'historiquePaiements')]
     private ?User $recuPar = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $heure = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class HistoriquePaiement
     public function setRecuPar(?User $recuPar): static
     {
         $this->recuPar = $recuPar;
+
+        return $this;
+    }
+
+    public function getHeure(): ?\DateTimeInterface
+    {
+        return $this->heure;
+    }
+
+    public function setHeure(\DateTimeInterface $heure): static
+    {
+        $this->heure = $heure;
 
         return $this;
     }

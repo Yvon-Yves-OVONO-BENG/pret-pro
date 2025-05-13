@@ -20,60 +20,90 @@
             <!--End Page header-->
             <!-- DONNEES DU JOUR -->
             <div class="row">
-                <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                     <div class="card overflow-hidden dash1-card border-0 dash2">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="">
                                         <span class="fs-14">CASH</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCashDuJour }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCashDuJour }} FCFA</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCashDuJour|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCashDuJour|number_format }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                     <div class="card overflow-hidden dash1-card border-0 dash1">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="">
-                                        <span class="fs-14 font-weight-normal">{% trans %}PRIS EN CHARGE{% endtrans %}</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombrePrisEnChargeDuJour }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantPrisEnChargeDuJour }} FCFA</h5>
+                                        <span class="fs-14 font-weight-normal">{% trans %}CHEQUE{% endtrans %}</span>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreChequeDuJour|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantChequeDuJour|number_format }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                     <div class="card overflow-hidden dash1-card border-0 dash3">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="">
-                                        <span class="fs-14">{% trans %}CRÉDIT{% endtrans %}</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCreditDuJour }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCreditDuJour }} FCFA</h5>
+                                        <span class="fs-14">{% trans %}MOBILE MONEY{% endtrans %}</span>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreMomoDuJour|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantMomoDuJour|number_format }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
+                    <div class="card overflow-hidden dash1-card border-0 dash3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="">
+                                        <span class="fs-14">{% trans %}ORANGE MONEY{% endtrans %}</span>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreOmDuJour|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantOmDuJour|number_format }} FCFA</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
+                    <div class="card overflow-hidden dash1-card border-0 dash2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="">
+                                        <span class="fs-14">VIREMENT</span>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreVirementDuJour|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantVirementDuJour|number_format }} FCFA</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                     <div class="card overflow-hidden dash1-card border-0 dash4">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="text-justify">
                                         <span>Total</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCashDuJour + nombrePrisEnChargeDuJour + nombreCreditDuJour }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCashDuJour + montantPrisEnChargeDuJour + montantCreditDuJour }} FCFA</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ (nombreCashDuJour + nombreChequeDuJour + nombreMomoDuJour + nombreOmDuJour + nombreVirementDuJour)|number_format }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ (montantCashDuJour + montantChequeDuJour + montantMomoDuJour + montantOmDuJour + montantVirementDuJour)|number_format }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
@@ -128,8 +158,8 @@
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="">
                                         <span class="fs-14 font-weight-normal">{% trans %}PRIS EN CHARGE{% endtrans %}</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombrePrisEnCharge }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantPrisEnCharge }} FCFA</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCheque }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCheque }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
@@ -143,8 +173,8 @@
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="">
                                         <span class="fs-14">{% trans %}CRÉDIT{% endtrans %}</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCredit }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCredit }} FCFA</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreMomo }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantMomo }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>
@@ -158,8 +188,8 @@
                                 <div class="col-md-12 col-sm-12 col-12">
                                     <div class="text-justify">
                                         <span>Total</span>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCash + nombrePrisEnCharge + nombreCredit }}</h5>
-                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCash + montantPrisEnCharge + montantCredit }} FCFA</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Nombre :{% endtrans %} {{ nombreCash + nombreCheque + nombreMomo }}</h5>
+                                        <h5 class="mb-2 mt-1 number-font carn2 font-weight-bold">{% trans %}Recette :{% endtrans %} {{ montantCash + montantCheque + montantMomo }} FCFA</h5>
                                     </div>
                                 </div>
                             </div>

@@ -165,24 +165,24 @@
                                     {{ form_start(confirmerFactureForm, {'attr': {'class':'row g-4'}})}}
                                         
                                         <div class="col-md-3 position-relative">
-                                            <label for="validationCustom04" class="form-label">{% trans %}Nom du patient pris en charge{% endtrans %}</label>
-                                            {{ form_widget(confirmerFactureForm.patient ) }}
+                                            <label for="validationCustom04" class="form-label">{% trans %}Nom du client pris en charge{% endtrans %}</label>
+                                            {{ form_widget(confirmerFactureForm.client ) }}
 
                                             <div class="invalid-tooltip">
                                                 {% trans %}Veuillez sélectionner le nom du patien pris en charge{% endtrans %}
                                             </div>
                                         </div>
                                         <div class="col-md-3 position-relative">
-                                            <label for="validationCustom04" class="form-label">{% trans %}Nom du patient{% endtrans %}</label>
-                                            {{ form_widget(confirmerFactureForm.nomPatient) }}
+                                            <label for="validationCustom04" class="form-label">{% trans %}Nom du client{% endtrans %}</label>
+                                            {{ form_widget(confirmerFactureForm.nomClient) }}
 
                                             <div class="invalid-tooltip">
-                                                {% trans %}Veuillez saisir le nom du patient{% endtrans %}
+                                                {% trans %}Veuillez saisir le nom du client{% endtrans %}
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <label for="validationCustom04" class="form-label">{% trans %}Contact du client{% endtrans %}</label>
-                                            {{ form_widget(confirmerFactureForm.contactPatient)}}
+                                            {{ form_widget(confirmerFactureForm.contactClient)}}
                                             <div class="invalid-tooltip">
                                                 {% trans %}Veuillez saisir le contact du client{% endtrans %}
                                             </div>

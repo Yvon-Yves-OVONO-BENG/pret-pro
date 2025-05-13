@@ -40,7 +40,7 @@
 			</div>
 			<div class="page-rightheader">
 				<div class="btn-list">
-					{% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_REGIES_DES_RECETTES') or is_granted('ROLE_ADMINISTRATEUR') %}
+					{% if is_granted('ROLE_REGIES_DES_RECETTES') or is_granted('ROLE_ADMINISTRATEUR') %}
 						{# <a href="{{ path ('ajouter_recette') }}" class="btn btn-outline-primary"><i class="fe fe-plus me-2"></i>
 							{% trans %}Ajouter un recette{% endtrans %}
 						</a> #}

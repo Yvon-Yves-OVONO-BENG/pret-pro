@@ -87,6 +87,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Genre $genre = null;
 
+    #[ORM\Column]
+    private ?bool $bloque = null;
+
     public function __construct()
     {
         $this->factures = new ArrayCollection();
@@ -480,6 +483,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGenre(?Genre $genre): static
     {
         $this->genre = $genre;
+
+        return $this;
+    }
+
+    public function isBloque(): ?bool
+    {
+        return $this->bloque;
+    }
+
+    public function setBloque(bool $bloque): static
+    {
+        $this->bloque = $bloque;
 
         return $this;
     }

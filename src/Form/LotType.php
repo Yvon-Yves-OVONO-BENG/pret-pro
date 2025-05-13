@@ -47,22 +47,7 @@ class LotType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => $this->translator->trans("Prix d'achat"),
-                ]
-            ])
-            ->add('coef', NumberType::class, [
-                'label' => $this->translator->trans("Coef"),
-                'required' => true,
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => $this->translator->trans("Coef"),
-                ]
-            ])
-            ->add('datePeremptionAt', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                    'placeholder' => $this->translator->trans("Prix de vente"),
                 ]
             ])
             ->add('typeProduit', EntityType::class, [

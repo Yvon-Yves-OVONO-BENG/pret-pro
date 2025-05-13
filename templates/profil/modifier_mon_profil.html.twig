@@ -74,7 +74,8 @@
 														{{ form_widget(formProfil.adresse, {'attr': {'id':'validationCustom04'}}) }}
 													</div>
 												</div>
-												
+												<input type="hidden" value="{{ csrfToken }}" name="csrfToken">
+                                
 												<div class="col-md-12">
 													<div class="form-group">
 														<label class="form-label">{% trans %}Photo{% endtrans %}</label>

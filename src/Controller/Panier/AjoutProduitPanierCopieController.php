@@ -46,7 +46,7 @@ class AjoutProduitPanierCopieController extends AbstractController
             #si le produit n'existe pas
             if (!$produit) 
             {
-                $kit = $this->produitRepository->findOneBySlug([
+                $ensemble = $this->produitRepository->findOneBySlug([
                     'slug' => $slug
                 ]);
             
@@ -60,7 +60,7 @@ class AjoutProduitPanierCopieController extends AbstractController
             } 
             else 
             {
-                $this->addFlash('info', $this->translator->trans('Kit ajouté dans le panier avec succès !'));
+                $this->addFlash('info', $this->translator->trans('Ensemble ajouté dans le panier avec succès !'));
             }
         } 
         
@@ -77,10 +77,10 @@ class AjoutProduitPanierCopieController extends AbstractController
             #je retourne à la liste des produits
             return $this->redirectToRoute('afficher_produit', [ 'p' => 1 ]);
        }
-       elseif($position == 'listeKit')
+       elseif($position == 'listeEnsemble')
        {
-            #je retourne à la liste des kits
-            return $this->redirectToRoute('liste_kit', [ 'm' => 1 ]);
+            #je retourne à la liste des ensembles
+            return $this->redirectToRoute('liste_ensemble', [ 'm' => 1 ]);
        }
 
         // return new JsonResponse(['success' => true ]);

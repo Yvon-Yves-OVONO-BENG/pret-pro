@@ -52,7 +52,7 @@ class AjoutProduitPanierController extends AbstractController
         } 
         else 
         {
-            $this->addFlash('info', $this->translator->trans('Kit ajouté dans le panier avec succès !'));
+            $this->addFlash('info', $this->translator->trans('Ensemble ajouté dans le panier avec succès !'));
         }
     
         return new JsonResponse(['success' => true ]);

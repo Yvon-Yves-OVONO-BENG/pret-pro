@@ -9,9 +9,9 @@ ajout_produit_panier:
     controller: App\Controller\Panier\AjoutProduitPanierController::ajoutProduitPanier
     methods: ['POST']
 
-terminer_patient:
-    path: /patient/terminer-patient
-    controller: App\Controller\Patient\TerminerPatientController::terminerPatient
+terminer_client:
+    path: /client/terminer-client
+    controller: App\Controller\Client\TerminerClientController::terminerClient
     methods: ['POST']
 
 activer_utilisateur:

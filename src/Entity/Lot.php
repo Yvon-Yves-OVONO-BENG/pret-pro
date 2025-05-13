@@ -34,17 +34,11 @@ class Lot
     #[ORM\ManyToOne(inversedBy: 'lots')]
     private ?User $enregistrePar = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $datePeremptionAt = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $prixAchat = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $prixVente = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
-    private ?string $coef = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $enregistreLeAt = null;
@@ -155,18 +149,6 @@ class Lot
         return $this;
     }
 
-    public function getDatePeremptionAt(): ?\DateTimeInterface
-    {
-        return $this->datePeremptionAt;
-    }
-
-    public function setDatePeremptionAt(?\DateTimeInterface $datePeremptionAt): static
-    {
-        $this->datePeremptionAt = $datePeremptionAt;
-
-        return $this;
-    }
-
     public function getPrixAchat(): ?int
     {
         return $this->prixAchat;
@@ -187,18 +169,6 @@ class Lot
     public function setPrixVente(?int $prixVente): static
     {
         $this->prixVente = $prixVente;
-
-        return $this;
-    }
-
-    public function getCoef(): ?string
-    {
-        return $this->coef;
-    }
-
-    public function setCoef(?string $coef): static
-    {
-        $this->coef = $coef;
 
         return $this;
     }

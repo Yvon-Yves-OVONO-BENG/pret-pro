@@ -4,7 +4,6 @@ namespace App\Controller\Facture;
 
 use App\Repository\FactureRepository;
 use App\Repository\HistoriquePaiementRepository;
-use App\Repository\PatientRepository;
 use App\Service\ImpressionFactureService;
 use App\Service\ImpressionHistoriquePaiementService;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,6 @@ class ImprimerHistoriquePaiementController extends AbstractController
 {
     public function __construct(
         protected FactureRepository $factureRepository,
-        protected PatientRepository $patientRepository,
         protected ImpressionFactureService $impressionFactureService,
         protected HistoriquePaiementRepository $historiquePaiementRepository, 
         protected ImpressionHistoriquePaiementService $impressionHistoriquePaiementService, 

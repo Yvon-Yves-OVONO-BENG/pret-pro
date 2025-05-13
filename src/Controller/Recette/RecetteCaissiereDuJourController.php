@@ -29,9 +29,7 @@ class RecetteCaissiereDuJourController extends AbstractController
     {
         #date du jour
         $aujourdhui = date_create(date_format(new DateTime('now'), 'Y-m-d'), timezone_open('Pacific/Nauru'));
-        // $aujourdhui = new DateTime("now");
-        // $date = date_create_from_format('Y-m-d', $aujourdhui);
-        // dd($aujourdhui);
+        
         #je récupère les recettes des caissières du jour
 
         // $avancesDuJour = $this->historiquePaiementRepository->avancesDuJour($aujourdhui);

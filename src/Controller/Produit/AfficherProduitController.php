@@ -83,7 +83,7 @@ class AfficherProduitController extends AbstractController
         if ($this->getUser() && in_array(ConstantsClass::ROLE_CAISSIERE, $this->getUser()->getRoles())) 
         {
             $produits = $this->produitRepository->findBy([
-                'kit' => 0,
+                'ensemble' => 0,
                 'supprime' => 0,
                 'retire' => 0,
             ], ['libelle' => 'ASC' ]);
@@ -91,7 +91,7 @@ class AfficherProduitController extends AbstractController
         else 
         {
             $produits = $this->produitRepository->findBy([
-                'kit' => 0,
+                'ensemble' => 0,
                 'supprime' => 0,
             ], ['libelle' => 'ASC' ]);
         }

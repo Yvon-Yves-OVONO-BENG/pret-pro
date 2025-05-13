@@ -46,7 +46,7 @@ class AnnulerFactureController extends AbstractController
             #je récupère sa quantité dans la facture
             $quantiteFacture = $ligneDeFacture->getQuantite();
 
-            if (!$ligneDeFacture->getProduit()->isKit()) 
+            if (!$ligneDeFacture->getProduit()->isEnsemble()) 
             {
                 #je récupère le lot
                 $lot = $ligneDeFacture->getProduit()->getLot();

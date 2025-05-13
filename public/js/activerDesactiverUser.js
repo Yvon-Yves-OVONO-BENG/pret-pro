@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(isChecked );
         ///je cree un nouvel objet XMLHttpRequest
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/pharmacie/public/utilisateur/activer-utilisateur', true);
+			xhr.open('POST', '/pretpro/public/utilisateur/activer-utilisateur', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function() 
 			{

@@ -44,7 +44,7 @@ class CaissesSepareesDuJourController extends AbstractController
         
         $recettesDuJour = $this->factureRepository->recetteDujour($aujourdhui);
         // dd($recettesDuJour);
-        $recettesKitDuJour = $this->factureRepository->kitsVenduParCaissiereDuJour();
+        $recettesEnsembleDuJour = $this->factureRepository->ensemblesVenduParCaissiereDuJour();
 
         #je récupère les factures du jour
         $facturesDuJour = $this->factureRepository->findBy([
@@ -58,7 +58,7 @@ class CaissesSepareesDuJourController extends AbstractController
             'aujourdhui' => $aujourdhui,
             'facturesDuJour' => $facturesDuJour,
             'recettesDuJour' => $recettesDuJour,
-            'recettesKitDuJour' => $recettesKitDuJour,
+            'recettesEnsembleDuJour' => $recettesEnsembleDuJour,
         ]);
     }
 }

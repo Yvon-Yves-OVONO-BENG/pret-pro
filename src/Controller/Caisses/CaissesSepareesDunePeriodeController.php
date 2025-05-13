@@ -43,7 +43,7 @@ class CaissesSepareesDunePeriodeController extends AbstractController
         $dateFin = "";
         $facturesDuJour = "";
         $recettesDuJour = "";
-        $recettesKitDuJour ="";
+        $recettesEnsembleDuJour ="";
 
         $afficher = false;
 
@@ -54,7 +54,7 @@ class CaissesSepareesDunePeriodeController extends AbstractController
             
             $recettesDuJour = $this->ligneDeFactureRepository->recetteDunePeriode($dateDebut, $dateFin);
 
-            $recettesKitDuJour = $this->factureRepository->kitsVenduParCaissiereDunePeriode($dateDebut, $dateFin);
+            $recettesEnsembleDuJour = $this->factureRepository->ensemblesVenduParCaissiereDunePeriode($dateDebut, $dateFin);
 
             #je récupère les factures du jour
             $facturesDuJour = $this->factureRepository->facturePeriodeDonnee($dateDebut, $dateFin);
@@ -71,7 +71,7 @@ class CaissesSepareesDunePeriodeController extends AbstractController
             'dateDuJour' => "",
             'facturesDuJour' => $facturesDuJour,
             'recettesDuJour' => $recettesDuJour,
-            'recettesKitDuJour' => $recettesKitDuJour,
+            'recettesEnsembleDuJour' => $recettesEnsembleDuJour,
         ]);
     }
 }

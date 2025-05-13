@@ -6,13 +6,13 @@
         <!-- Meta data -->
 		<meta charset="UTF-8">
 		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
-		<meta content="Pharmacy" name="description">
+		<meta content="Prêt-Pro" name="description">
 		<meta content="Spruko Private Limited" name="author">
 		<meta name="keywords" content="admin, admin template, dashboard, admin dashboard, responsive, bootstrap, bootstrap 5, admin theme, admin themes, bootstrap admin template, scss, ui, crm, modern, flat">
 
 
 		<!--Favicon -->
-		<link rel="icon" href="{{ asset ('assets/images/brand/logoPharmacy.png')}}" type="image/x-icon"/>
+		<link rel="icon" href="{{ asset ('assets/images/brand/logo.png')}}" type="image/x-icon"/>
 
 		<!--Bootstrap css -->
 		<link href="{{ asset ('assets/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -80,6 +80,54 @@
 		<script src="{{ asset ('js/popupPanier.js') }}"></script>
     </head>
     <body class="app">
+
+		{% if app.user and app.user.bloque == 1 and b == 0 %}
+				
+			<script>
+				// Exemple d'utilisation de SweetAlert2
+				Swal.fire({
+					title: 'Votre compte est bloqué !',
+					text: "Veuillez consulter un administrateur !",
+					icon: 'error',
+					allowOutsideClick: false,
+					allowEscapeKey: false,
+					allowEnterKey: false,
+					showConfirmButton: true,
+					confirmButtonText: "D'accord",
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// Redirection vers une autre page ou rafraîchissement de la page actuelle
+						window.location.href = "{{ path ('app_logout') }}"; // Exemple de redirection
+					}
+				});
+				// Empêcher toute interaction utilisateur
+				
+			</script>
+			{% else %}
+				{% if app.user and app.user.bloque == 1 and b == 1 %}
+					<script>
+						// Exemple d'utilisation de SweetAlert2
+						Swal.fire({
+							title: 'Sécurité menaceé',
+							text: "Tentative de soumission non sécurisée détectée !",
+							icon: 'error',
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false,
+							showConfirmButton: true,
+							confirmButtonText: "D'accord",
+						}).then((result) => {
+							if (result.isConfirmed) {
+								// Redirection vers une autre page ou rafraîchissement de la page actuelle
+								window.location.href = "{{ path ('app_logout') }}"; // Exemple de redirection
+							}
+						});
+						// Empêcher toute interaction utilisateur
+						
+					</script>
+				{% endif %}
+														
+		{% endif %}
 		<!---Global-loader-->
 		<div id="global-loader" >
 			<img src="{{ asset ('assets/images/svgs/loader.svg') }}" alt="loader" width="150" height="150">
@@ -104,30 +152,8 @@
 				{% block body %}
 					
 				{% endblock %}
-				{% if app.user.etat %}
+
 				
-					<script>
-						// Exemple d'utilisation de SweetAlert2
-						Swal.fire({
-							title: 'Votre compte est désactivé',
-							text: "Veuillez contacter l'administrateur.",
-							icon: 'error',
-							allowOutsideClick: false,
-							allowEscapeKey: false,
-							allowEnterKey: false,
-							showConfirmButton: true,
-							confirmButtonText: "D'accord",
-						}).then((result) => {
-							if (result.isConfirmed) {
-								// Redirection vers une autre page ou rafraîchissement de la page actuelle
-								window.location.href = "{{ path ('app_logout') }}"; // Exemple de redirection
-							}
-						});
-						// Empêcher toute interaction utilisateur
-						
-					</script>
-																
-				{% endif %}
 
         		{% include "includes/_footer.html.twig" %}
 

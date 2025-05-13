@@ -56,14 +56,14 @@ class Produit
     #[ORM\Column(nullable: true)]
     private ?bool $supprime = null;
 
-    #[ORM\OneToMany(targetEntity: LigneDeKit::class, mappedBy: 'produit')]
-    private Collection $ligneDeKits;
+    #[ORM\OneToMany(targetEntity: LigneDeEnsemble::class, mappedBy: 'produit')]
+    private Collection $ligneDeEnsembles;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $kit = null;
+    private ?bool $ensemble = null;
 
-    #[ORM\OneToMany(targetEntity: LigneDeKit::class, mappedBy: 'produitKit', cascade: ['persist', 'remove'])]
-    private Collection $produitLigneDeKits;
+    #[ORM\OneToMany(targetEntity: LigneDeEnsemble::class, mappedBy: 'produitEnsemble', cascade: ['persist', 'remove'])]
+    private Collection $produitLigneDeEnsembles;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateEntreeAt = null;
@@ -87,8 +87,8 @@ class Produit
     {
         $this->ligneDeFactures = new ArrayCollection();
         $this->fournisseurProduits = new ArrayCollection();
-        $this->ligneDeKits = new ArrayCollection();
-        $this->produitLigneDeKits = new ArrayCollection();
+        $this->ligneDeEnsembles = new ArrayCollection();
+        $this->produitLigneDeEnsembles = new ArrayCollection();
         $this->ligneDeCommandes = new ArrayCollection();
     }
 
@@ -275,71 +275,71 @@ class Produit
     }
 
     /**
-     * @return Collection<int, LigneDeKit>
+     * @return Collection<int, LigneDeEnsemble>
      */
-    public function getLigneDeKits(): Collection
+    public function getLigneDeEnsembles(): Collection
     {
-        return $this->ligneDeKits;
+        return $this->ligneDeEnsembles;
     }
 
-    public function addLigneDeKit(LigneDeKit $ligneDeKit): static
+    public function addLigneDeEnsemble(LigneDeEnsemble $ligneDeEnsemble): static
     {
-        if (!$this->ligneDeKits->contains($ligneDeKit)) {
-            $this->ligneDeKits->add($ligneDeKit);
-            $ligneDeKit->setProduit($this);
+        if (!$this->ligneDeEnsembles->contains($ligneDeEnsemble)) {
+            $this->ligneDeEnsembles->add($ligneDeEnsemble);
+            $ligneDeEnsemble->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeLigneDeKit(LigneDeKit $ligneDeKit): static
+    public function removeLigneDeEnsemble(LigneDeEnsemble $ligneDeEnsemble): static
     {
-        if ($this->ligneDeKits->removeElement($ligneDeKit)) {
+        if ($this->ligneDeEnsembles->removeElement($ligneDeEnsemble)) {
             // set the owning side to null (unless already changed)
-            if ($ligneDeKit->getProduit() === $this) {
-                $ligneDeKit->setProduit(null);
+            if ($ligneDeEnsemble->getProduit() === $this) {
+                $ligneDeEnsemble->setProduit(null);
             }
         }
 
         return $this;
     }
 
-    public function isKit(): ?bool
+    public function isEnsemble(): ?bool
     {
-        return $this->kit;
+        return $this->ensemble;
     }
 
-    public function setKit(bool $kit): static
+    public function setEnsemble(bool $ensemble): static
     {
-        $this->kit = $kit;
+        $this->ensemble = $ensemble;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, LigneDeKit>
+     * @return Collection<int, LigneDeEnsemble>
      */
-    public function getProduitLigneDeKits(): Collection
+    public function getProduitLigneDeEnsembles(): Collection
     {
-        return $this->produitLigneDeKits;
+        return $this->produitLigneDeEnsembles;
     }
 
-    public function addProduitLigneDeKit(LigneDeKit $produitLigneDeKit): static
+    public function addProduitLigneDeEnsemble(LigneDeEnsemble $produitLigneDeEnsemble): static
     {
-        if (!$this->produitLigneDeKits->contains($produitLigneDeKit)) {
-            $this->produitLigneDeKits->add($produitLigneDeKit);
-            $produitLigneDeKit->setProduitKit($this);
+        if (!$this->produitLigneDeEnsembles->contains($produitLigneDeEnsemble)) {
+            $this->produitLigneDeEnsembles->add($produitLigneDeEnsemble);
+            $produitLigneDeEnsemble->setProduitEnsemble($this);
         }
 
         return $this;
     }
 
-    public function removeProduitLigneDeKit(LigneDeKit $produitLigneDeKit): static
+    public function removeProduitLigneDeEnsemble(LigneDeEnsemble $produitLigneDeEnsemble): static
     {
-        if ($this->produitLigneDeKits->removeElement($produitLigneDeKit)) {
+        if ($this->produitLigneDeEnsembles->removeElement($produitLigneDeEnsemble)) {
             // set the owning side to null (unless already changed)
-            if ($produitLigneDeKit->getProduitKit() === $this) {
-                $produitLigneDeKit->setProduitKit(null);
+            if ($produitLigneDeEnsemble->getProduitEnsemble() === $this) {
+                $produitLigneDeEnsemble->setProduitEnsemble(null);
             }
         }
 

@@ -77,7 +77,7 @@
 				{% endif %}
 			</div>
 			<div class="page-rightheader">
-			{% if is_granted('ROLE_PHARMACIEN') or is_granted('ROLE_DIRECTEUR') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_SECRETAIRE')  %}
+			{% if is_granted('ROLE_DIRECTEUR') or is_granted('ROLE_ADMINISTRATEUR') or is_granted('ROLE_SECRETAIRE')  %}
 				<div class="btn-list">
 					<a href="{{ path ('ajouter_produit') }}" class="btn btn-outline-primary"><i class="fe fe-plus me-2"></i>
 						{% trans %}Ajouter un produit{% endtrans %}

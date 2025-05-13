@@ -6,7 +6,7 @@ use App\Entity\EtatFacture;
 use App\Entity\Facture;
 use DateTime;
 use App\Entity\LigneDeFacture;
-use App\Entity\LigneDeKit;
+use App\Entity\LigneDeEnsemble;
 use App\Entity\Lot;
 use App\Entity\ModePaiement;
 use App\Entity\Produit;
@@ -57,12 +57,12 @@ class LigneDeFactureRepository extends ServiceEntityRepository
     }
 
     /**
-     * fonction qui retourne les kits vendus du jour
+     * fonction qui retourne les ensembles vendus du jour
      *
      * @param DateTime $date
      * @return array
      */
-    public function kitsVendusDuJour(DateTime $date): array
+    public function ensemblesVendusDuJour(DateTime $date): array
     {
         $qb = $this->createQueryBuilder('l')
             ->innerJoin(Facture::class, 'f')
@@ -70,7 +70,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
             ->where('l.facture = f.id')
             ->andWhere('l.produit = p.id')
             ->andWhere('p.supprime = 0')
-            ->andWhere('p.kit = 1')
+            ->andWhere('p.ensemble = 1')
             ->andWhere('f.dateFactureAt = :date')
             ->setParameter('date', date_format($date, 'Y-m-d'))
             ;
@@ -137,7 +137,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
                 ->andWhere('l.facture = f.id')
                 ->andWhere('f.modePaiement = m.id')
                 ->andWhere('p.lot = lt.id')
-                ->andWhere('p.kit = 0')
+                ->andWhere('p.ensemble = 0')
                 ->andWhere('p.supprime = 0')
                 ->andWhere('lt.typeProduit = tp.id')
                 ->andWhere('l.produit = p.id')
@@ -182,7 +182,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
                 ->andWhere('etf.id = f.etatFacture')
                 ->andWhere('u.id = f.caissiere')
                 ->andWhere('p.supprime = 0')
-                ->andWhere('p.kit = 0')
+                ->andWhere('p.ensemble = 0')
                 ->andWhere('f.annulee = 0')
                 ->andWhere('f.dateFactureAt = :dateFacture')
                 ->setParameter('dateFacture', date_format($aujourdhui, 'Y-m-d'))
@@ -221,7 +221,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
                 ->andWhere('etf.id = f.etatFacture')
                 ->andWhere('u.id = f.caissiere')
                 ->andWhere('p.supprime = 0')
-                ->andWhere('p.kit = 0')
+                ->andWhere('p.ensemble = 0')
                 ->andWhere('f.annulee = 0')
                 ->andWhere('f.dateFactureAt = :dateFacture')
                 ->setParameter('dateFacture', date_format($dateDuJour, 'Y-m-d'))
@@ -262,7 +262,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
                 ->andWhere('etf.id = f.etatFacture')
                 ->andWhere('u.id = f.caissiere')
                 ->andWhere('p.supprime = 0')
-                ->andWhere('p.kit = 0')
+                ->andWhere('p.ensemble = 0')
                 ->andWhere('f.annulee = 0')
                 ->andWhere('f.dateFactureAt BETWEEN :dateDebut AND :dateFin')
                 ->setParameter('dateDebut', date_format($dateDebut, 'Y-m-d'))
@@ -277,16 +277,16 @@ class LigneDeFactureRepository extends ServiceEntityRepository
 
 
     /**
-     * fonction qui retourne les les kits vendus du jour
+     * fonction qui retourne les les ensembles vendus du jour
      *
      * @param DateTime $dateFacture
      * @return array
      */
-    public function chercheLesKitsVendusDujour(DateTime $dateFacture): array
+    public function chercheLesEnsemblesVendusDujour(DateTime $dateFacture): array
     {
         $queryBuilder = $this->em->createQueryBuilder();
         $queryBuilder
-                ->select('p.libelle AS kit, SUM(l.quantite) as quantiteFacture, m.modePaiement AS modePaiement, 
+                ->select('p.libelle AS ensemble, SUM(l.quantite) as quantiteFacture, m.modePaiement AS modePaiement, 
                 SUM(l.prixQuantite) montant')
                 ->from(LigneDeFacture::class, 'l')
                 ->innerJoin(Facture::class, 'f')
@@ -295,7 +295,7 @@ class LigneDeFactureRepository extends ServiceEntityRepository
                 // ->addSelect('p')
                 ->andWhere('l.facture = f.id')
                 ->andWhere('f.modePaiement = m.id')
-                ->andWhere('p.kit = 1')
+                ->andWhere('p.ensemble = 1')
                 ->andWhere('p.supprime = 0')
                 ->andWhere('l.produit = p.id')
                 ->andWhere('f.annulee = 0')

@@ -32,8 +32,7 @@ class ProduitRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p')
             ->innerJoin(Lot::class, 'l')
             ->andWhere('p.lot = l.id')
-            ->andWhere('l.datePeremptionAt IS NOT NULL')
-            ->andWhere('p.kit = 0')
+            ->andWhere('p.ensemble = 0')
             ->andWhere('p.supprime = 0')
             ;
 
@@ -47,7 +46,7 @@ class ProduitRepository extends ServiceEntityRepository
             ->innerJoin(Lot::class, 'l')
             ->andWhere('p.lot = l.id')
             ->andWhere('(l.quantite - l.vendu) = p.quantiteSeuil')
-            ->andWhere('p.kit = 0')
+            ->andWhere('p.ensemble = 0')
             ->andWhere('p.supprime = 0')
             ->orderBy('p.libelle', 'ASC')
             ;

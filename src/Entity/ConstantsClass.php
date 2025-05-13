@@ -6,14 +6,12 @@ class ConstantsClass
 {
     public const ROLE_ADMINISTRATEUR = 'ROLE_ADMINISTRATEUR';
     public const ROLE_DIRECTEUR = 'ROLE_DIRECTEUR';
-    public const ROLE_PHARMACIEN = 'ROLE_PHARMACIEN';
     public const ROLE_REGIES_DES_RECETTES = 'ROLE_REGIES_DES_RECETTES';
     public const ROLE_SECRETAIRE = 'ROLE_SECRETAIRE';
     public const ROLE_CAISSIERE = 'ROLE_CAISSIERE';
 
     public const ADMINISTRATEUR = 'ADMINISTRATEUR';
     public const DIRECTEUR = 'DIRECTEUR';
-    public const PHARMACIEN = 'PHARMACIEN';
     public const REGIES_DES_RECETTES = 'RÉGIES DES RECETTES';
     public const SECRETAIRE = 'SECRÉTAIRE';
     public const CAISSIERE = 'CAISSIÈRE';
@@ -26,8 +24,11 @@ class ConstantsClass
     public const FICHIER = 'produit.png';
 
     public const CASH = 'CASH';
-    public const CREDIT = 'CRÉDIT';
-    public const PRIS_EN_CHARGE = 'PRIS EN CHARGE';
+    public const COMPOSE = 'COMPOSE';
+    public const MOBILE_MONEY = 'MOBILE MONEY';
+    public const ORANGE_MONEY = 'ORANGE MONEY';
+    public const CHEQUE ='CHEQUE';
+    public const VIREMENT = 'VIREMENT';
 
     public const SOLDE = 'SOLDE';
     public const NON_SOLDE = 'NON SOLDE';
@@ -39,11 +40,6 @@ class ConstantsClass
 
     public const NOM_PATIENT = 'Client';
     public const CONTACT_PATIENT = '+237 xxx xxx xxx';
-
-    #####################"
-    public const ACTE = 'Acte'; 
-    public const EXAMEN = 'Examen'; 
-    public const MEDICAMENT = 'Médicament'; 
 
     public const FEMININ = 'F';
     public const MASCULIN = 'M';

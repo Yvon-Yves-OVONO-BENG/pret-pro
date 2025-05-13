@@ -80,21 +80,7 @@ class ConfirmerFactureController extends AbstractController
                         $facture->setEtatFacture($solde);
                         break;
 
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $prisEnCharge = $this->etatFactureRepository->findOneByEtatFacture([
-                            'etatFacture' => ConstantsClass::NON_SOLDE
-                        ]);
-                        $facture->setEtatFacture($prisEnCharge);
-                        break;
-
-                    case ConstantsClass::CREDIT:
-                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
-                            'etatFacture' => ConstantsClass::NON_SOLDE
-                        ]);
-                        $facture->setEtatFacture($nonSolde);
-                        break;
+                    
                     
                 }
 
@@ -128,16 +114,6 @@ class ConfirmerFactureController extends AbstractController
 
                 }
 
-                if ($facture->getPatient()) 
-                {
-                    $facture->setPatient($facture->getPatient());
-                } 
-                else 
-                {
-                    $facture->setNomPatient(ConstantsClass::NOM_PATIENT)
-                        ->setContactPatient(ConstantsClass::CONTACT_PATIENT)
-                    ;
-                }
                 
                 $facture->setDateFactureAt($now)
                         ->setHeure($now)
@@ -189,6 +165,8 @@ class ConfirmerFactureController extends AbstractController
                  * @var Facture
                  */
                 $facture = $form->getData();
+                $qrCode = null;
+
                 
                 #je set l'état de facture en fonction du mode de paiement
                 switch ($facture->getModePaiement()->getModePaiement()) 
@@ -212,31 +190,14 @@ class ConfirmerFactureController extends AbstractController
                             $facture->setEtatFacture($nonSolde);
                         }
                         
-                        $facture->setNetAPayer($this->panierService->getTotal());
-                        break;
+                        //$qrCode = $this->qrcodeService->qrcode("Cette facture appartient à : ".$facture->getNomClient()." Contact : ".$facture->getContactClient().", adresse : ".$facture->getAdresseClient().", email : ".$facture->getEmailClient().", NET A PAYER : ".$this->panierService->getTotal());
 
-                    case ConstantsClass::PRIS_EN_CHARGE:
-                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
-                            'etatFacture' => ConstantsClass::NON_SOLDE
-                        ]);
-                        
-                        $facture->setEtatFacture($nonSolde)
-                        ->setNetAPayer($this->panierService->getTotal()*2)
+                        $facture->setNetAPayer($this->panierService->getTotal())
+                        //->setQrCode($qrCode)
                         ;
                         break;
 
-                    case ConstantsClass::CREDIT:
-                        ///je récupère l'état EN COURS pour setter la cammande qui vient d'être passé
-                        $nonSolde = $this->etatFactureRepository->findOneByEtatFacture([
-                            'etatFacture' => ConstantsClass::NON_SOLDE
-                        ]);
-                        
-                        $facture->setEtatFacture($nonSolde)
-                        ->setNetAPayer($this->panierService->getTotal());
-                        break;
-                    
-                }
+                    }
 
                 // 4. Nous allons la lier avec l'utilisateur actuellement connecté (Security)
                 
@@ -282,16 +243,14 @@ class ConfirmerFactureController extends AbstractController
                 /////je construis la référence
                 $reference = 'PP-'.$id.$jour.$mois.$annee;
 
-                if ($facture->getPatient()) 
-                {
-                    $facture->setPatient($facture->getPatient());
-                } 
+                
                 // else 
                 // {
-                //     $facture->setNomPatient(ConstantsClass::NOM_PATIENT)
-                //         ->setContactPatient(ConstantsClass::CONTACT_PATIENT)
+                //     $facture->setNomClient(ConstantsClass::NOM_PATIENT)
+                //         ->setContactClient(ConstantsClass::CONTACT_PATIENT)
                 //     ;
                 // }
+                
 
                 $facture->setCaissiere($user)
                         ->setDateFactureAt($now)
@@ -331,40 +290,34 @@ class ConfirmerFactureController extends AbstractController
                             $ligneDeFacture->setPrixQuantite($panierProduit->getTotal());
                             break;
     
-                        case ConstantsClass::PRIS_EN_CHARGE:
-                            $ligneDeFacture->setPrixQuantite($panierProduit->getTotal()*2);
-                            break;
-    
-                        case ConstantsClass::CREDIT:
-                            $ligneDeFacture->setPrixQuantite($panierProduit->getTotal());
-                            break;
+                        
                         
                     }
 
-                    if ($panierProduit->produit->isKit()) 
+                    if ($panierProduit->produit->isEnsemble()) 
                     {   
-                        foreach ($panierProduit->produit->getProduitLigneDeKits() as $ligneDeKit) 
+                        foreach ($panierProduit->produit->getProduitLigneDeEnsembles() as $ligneDeEnsemble) 
                         {   
                             #quantite de la facture
-                            $quantiteFacture = $ligneDeKit->getQuantite() * $panierProduit->qte;
+                            $quantiteFacture = $ligneDeEnsemble->getQuantite() * $panierProduit->qte;
                             
                             // dd($lot);
-                            if ($ligneDeKit->getProduit()->getLot()) 
+                            if ($ligneDeEnsemble->getProduit()->getLot()) 
                             {
                                 #nombreVendu dans un lot
-                                $ancienneQuantiteVenduLot = $ligneDeKit->getProduit()->getLot()->getVendu();
+                                $ancienneQuantiteVenduLot = $ligneDeEnsemble->getProduit()->getLot()->getVendu();
 
                                 #nouvelle quantité vendu
                                 $nouvelleQuaniteVenduLot = $ancienneQuantiteVenduLot + $quantiteFacture;
                                 
-                                $ligneDeKit->getProduit()->getLot()->setVendu($nouvelleQuaniteVenduLot);
+                                $ligneDeEnsemble->getProduit()->getLot()->setVendu($nouvelleQuaniteVenduLot);
 
-                                $this->em->persist($ligneDeKit->getProduit()->getLot());
+                                $this->em->persist($ligneDeEnsemble->getProduit()->getLot());
 
                             }
 
                             $this->em->persist($ligneDeFacture);
-                            $this->em->persist($ligneDeKit);
+                            $this->em->persist($ligneDeEnsemble);
                             
                         }
                     } 
